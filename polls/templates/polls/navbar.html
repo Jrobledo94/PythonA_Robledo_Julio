@@ -1,0 +1,83 @@
+<div class="header-container">
+    <div class="header-menu-mobile" style="height: 80px; box-shadow: rgba(0, 0, 0, 0) 0px 30px 60px -10px">
+        <div class="header-menu-blur"></div>
+        <div class="mobile-nav-container" style="transform: scale(1); opacity: 0; transform-origin: left center;">
+            <nav class="header-nav">
+                <a class="nav-link" href="/">
+                    <div>Inicio</div>
+                </a>
+                {% if user.is_authenticated %}
+                <a class="nav-link" href="#">
+                    <div>Ejemplos</div>
+                </a>
+                <a class="nav-link" href="#">
+                    <div>Tour</div>
+                </a>
+                <a class="nav-link" href="#">
+                    <div>Blog</div>
+                </a>
+                <a class="nav-link" href="#">
+                    <div>Ayuda</div>
+                </a>
+                <a class="nav-link" href="/logout">
+                    <div>Logout</div>
+                </a>
+                {% else %}
+                <a class="nav-link" href="/signin">
+                    <div>Ingresar</div>
+                </a>
+                <a class="nav-link" href="/signup">
+                    <div>Regístrate</div>
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        <div class="header-menu-download-button-container" style="opacity: 1; transform: scale(1);">
+            <button class="header-menu-download-button btn btn-SIDE">Descargar</button>
+        </div>
+    </div>
+    <div class="header-content">
+        <a class="header-logo" href="#">
+            {%  load static %}
+            <img class="header-logo-regular" src="{% static 'polls/img/LogoSecretaria.png'%} " alt="logo_chih">
+            <img class="header-logo-small" src="{% static 'polls/img/logo_chih.png' %}" alt="logo_chih">
+        </a>
+        <div class="header-nav">
+            <a class="nav-link" href="/">
+                <div>Inicio</div>
+            </a>
+            {% if user.is_authenticated %}
+            <a class="nav-link" href="#">
+                <div>Ejemplos</div>
+            </a>
+            <a class="nav-link" href="#">
+                <div>Tour</div>
+            </a>
+            <a class="nav-link" href="#">
+                <div>Blog</div>
+            </a>
+            <a class="nav-link" href="#">
+                <div>Ayuda</div>
+            </a>
+            <a class="nav-link" href="/logout">
+                    <div>Logout</div>
+                </a>
+            {% else %}
+            <a class="nav-link" href="/signin">
+                <div>Ingresar</div>
+            </a>
+            <a class="nav-link" href="/signup">
+                <div>Regístrate</div>
+            </a>
+            {% endif %}
+        </div>
+        <div class="nav-right">
+            <button class="btn btn-SIDE rounded-5 header-download-button">
+                <div>Descargar</div>
+            </button>
+            <button class="header-menu-button" aria-label="Menu Button">
+                <div class="hamburger"><span></span></div>
+            </button>
+        </div>
+    </div>
+</div>

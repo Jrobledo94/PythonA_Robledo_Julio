@@ -1,0 +1,344 @@
+## Checar si está Django instalado
+python -m django --version
+
+
+#VENV
+virtual environment creation
+python -m venv [RUTA]
+source [RUTA]/Scripts/activate (Windows)
+bin/activate (Linux)
+
+
+## Crear el proyecto en la carpeta actual (crea la carpeta con el nombre)
+django-admin startproject mysite
+
+## archivos creados por el comando anterior:
+    mysite/
+    manage.py
+    mysite/
+        __init__.py
+        settings.py
+        urls.py
+        asgi.py
+        wsgi.py
+
+## Comando para iniciar el proyecto con el server precargado con el proyecto
+python manage.py runserver
+
+## Crear una nueva app, que viene siendo un módulo en el proyecto
+python manage.py startapp polls
+
+## Este comando creará una carpeta 'polls' con la siguiente estructura:
+    polls/
+    __init__.py
+    admin.py
+    apps.py
+    migrations/
+        __init__.py
+    models.py
+    tests.py
+    views.py
+
+
+## Luego de esto, se crean las vistas en polls/views.py
+## En views.py, la más básica de las vistas se crearía en este archivo de la siguiente manera:
+
+    def index(request):
+        return HttpResponse("Hello, world. You're at the polls index.")
+
+
+## Para llamar a la vista, creamos un archivo dentro de la app con el nombre 'urls.py', quedando la estructura de la siguiente manera
+    polls/
+        __init__.py
+        admin.py
+        apps.py
+        migrations/
+            __init__.py
+        models.py
+        tests.py
+        urls.py
+        views.py
+
+## Incluímos el siguiente código en el archivo creado
+    from django.urls import path
+
+    from . import views
+
+    urlpatterns = [
+        path("", views.index, name="index"),
+    ]
+
+## El siguiente paso es apuntar todo lo que creamos en el URLconf raíz del proyecto, el cual está en la carpeta creada cuando creamos el proyecto, que en este caso es "Proyecto/urls.py"
+## Agregamos include al import de django.urls
+## y agregamos un path al array de urlpatterns:
+
+    from django.contrib import admin
+    from django.urls import include, path
+
+    urlpatterns = [
+        path("polls/", include("polls.urls")),
+        path("admin/", admin.site.urls),
+    ]
+
+## Una vez hecho esto, ya podrás ver la nueva página mediante localhost:8000/polls
+## Cada path envia 4 argumentos, route y view (route es el primer parámetro, en este caso 'polls/' view es la vista, segundo parámetro)
+## además, kwargs y name, los veremos más delante
+
+## Route es un string que contiene un patrón URL, cuando se procesa una petición, django inicia en el primer patron en urlpatterns (del archivo root URLconf "Proyecto/urls.py") y sigue bajando en la lista, comparando la url contra cada patron hasta encontrar uno que coincida
+
+
+
+
+
+
+
+## BASES DE DATOS
+
+## Para conectar a una base de datos que no sea la default (slite) se cambia en Proyecto/settings.py
+## Asegurarse de haber installado mysqlclient con pip
+
+    pip install mysqlclient
+
+
+## Connection settings are used in this order:
+
+## 1. OPTIONS.
+## 2. NAME, USER, PASSWORD, HOST, PORT
+## 3. MySQL option files.
+
+# settings.py
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'django_tutorial',
+            'USER': 'root',
+            'PASSWORD': 'root',
+            'HOST': 'localhost',
+            'PORT': '3306',
+        }
+    }
+
+## estos dos también
+    LANGUAGE_CODE = 'en-us'
+
+    TIME_ZONE = 'America/Chihuahua'
+
+## Correr migraciones
+
+python manage.py migrate
+
+## MODELOS
+
+## Escencialmente la estructura de la base de datos, con metadatos adicionales
+
+## En poll, se crean dos modelos, Question y Choice. question tiene una pregunta y una fecha de publicación. choice tiene dos campos, el texto de la elección y un recuento de votos. cada Choice está asociada a una Question
+
+## El código se escribe en models.py
+
+    from django.db import models
+
+
+    class Question(models.Model):
+        question_text = models.CharField(max_length=200)
+        pub_date = models.DateTimeField("date published")
+
+
+    class Choice(models.Model):
+        question = models.ForeignKey(Question, on_delete=models.CASCADE)
+        choice_text = models.CharField(max_length=200)
+        votes = models.IntegerField(default=0)
+
+
+
+## Aquí me cansé de traducir el tutorial, así que a copiar de inglés xd
+"""
+Here, each model is represented by a class that subclasses django.db.models.Model. Each model has a number of class variables, each of which represents a database field in the model.
+
+Cada campo está representado por una instancia de una clase Field, por ejemplo, CharField para campos de caracteres y DateTimeField para variables de tiempo y fecha. Esto le dice a Django qué tipo de datos cada campo contiene.
+
+El nombre de cada instancia Field (por ejemplo, question_text o pub_date)` es el nombre del campo, en formato adaptado al lenguaje de la máquina. Va a usar este valor en el código Python y su base de datos va a usarlo como el nombre de la columna.
+
+Puede emplear un primer argumento posicional opcional a una Field para designar un nombre legible por humanos. Ese se utiliza en varias partes introspectivas de Django y sirve al mismo tiempo como documentación. Si no se proporciona este campo, Django usará el nombre legible por la máquina. En este ejemplo, sólo hemos definido un nombre legible para Question.pub_date. Para el resto de los campos en este modelo, el nombre del campo legible por la máquina servirá como el nombre legible por humanos.
+
+Algunas clases Field precisan argumentos. La clase CharField, por ejemplo, requiere que usted le asigne un max_length. Esta se utiliza no sólo en el esquema de la base de datos, sino también en la validación como veremos dentro de poco.
+
+Una clase Field también puede tener varios argumentos opcionales; en este caso, le hemos fijado al default el valor de votes en 0.
+
+Por último, tenga en cuenta que una relación se define usando ForeignKey. Eso le indica a Django que cada Choice se relaciona con un sola Question. Django es compatible con todas las relaciones de bases de datos comunes: varias a una, varias a varias y una a una.
+
+"""
+
+
+
+
+
+
+
+usando el shell (py manage.py shell) en la terminal:
+
+>>> from polls.models import Choice, Question  # Import the model classes we just wrote.
+
+# No questions are in the system yet.
+>>> Question.objects.all()
+<QuerySet []>
+
+# Create a new Question.
+# Support for time zones is enabled in the default settings file, so
+# Django expects a datetime with tzinfo for pub_date. Use timezone.now()
+# instead of datetime.datetime.now() and it will do the right thing.
+>>> from django.utils import timezone
+>>> q = Question(question_text="What's new?", pub_date=timezone.now())
+
+# Save the object into the database. You have to call save() explicitly.
+>>> q.save()
+
+# Now it has an ID.
+>>> q.id
+1
+
+# Access model field values via Python attributes.
+>>> q.question_text
+"What's new?"
+>>> q.pub_date
+datetime.datetime(2012, 2, 26, 13, 0, 0, 775217, tzinfo=datetime.timezone.utc)
+
+# Change values by changing the attributes, then calling save().
+>>> q.question_text = "What's up?"
+>>> q.save()
+
+# objects.all() displays all the questions in the database.
+>>> Question.objects.all()
+<QuerySet [<Question: Question object (1)>]>
+
+
+Un segundo. <Question: Question object (1)> no es una representación útil de este objeto.
+Arreglemos esto modificando el modelo Question (en el archivo polls/models.py)
+y agregando un metodo __str__() a los dos modelos, Question y Choice:
+
+from django.db import models
+
+
+class Question(models.Model):
+    # ...
+    def __str__(self):
+        return self.question_text
+
+
+class Choice(models.Model):
+    # ...
+    def __str__(self):
+        return self.choice_text
+
+
+
+
+de nuevo en el shell:
+# Django provides a rich database lookup API that's entirely driven by
+# keyword arguments.
+>>> Question.objects.filter(id=1)
+<QuerySet [<Question: What's up?>]>
+>>> Question.objects.filter(question_text__startswith="What")
+<QuerySet [<Question: What's up?>]>
+
+# Get the question that was published this year.
+>>> from django.utils import timezone
+>>> current_year = timezone.now().year
+>>> Question.objects.get(pub_date__year=current_year)
+<Question: What's up?>
+
+# Request an ID that doesn't exist, this will raise an exception.
+>>> Question.objects.get(id=2)
+Traceback (most recent call last):
+    ...
+DoesNotExist: Question matching query does not exist.
+
+Filter es para varios registros, get espera sólo un registro, si es más, arroja error
+
+
+# Lookup by a primary key is the most common case, so Django provides a
+# shortcut for primary-key exact lookups.
+# The following is identical to Question.objects.get(id=1).
+>>> Question.objects.get(pk=1)
+<Question: What's up?>
+
+# Make sure our custom method worked.
+>>> q = Question.objects.get(pk=1)
+>>> q.was_published_recently()
+True
+
+# Give the Question a couple of Choices. The create call constructs a new
+# Choice object, does the INSERT statement, adds the choice to the set
+# of available choices and returns the new Choice object. Django creates
+# a set to hold the "other side" of a ForeignKey relation
+# (e.g. a question's choice) which can be accessed via the API.
+>>> q = Question.objects.get(pk=1)
+
+# Display any choices from the related object set -- none so far.
+# _set es un reverse en relación a un queryset, vendrian siendo registros de otro modelo(tabla) cuya relación es 1 a muchos (aquí es 1 pregunta, varias respuestas). como un child de un parent.
+>>> q.choice_set.all()
+<QuerySet []>
+
+# Create three choices.
+>>> q.choice_set.create(choice_text="Not much", votes=0)
+<Choice: Not much>
+>>> q.choice_set.create(choice_text="The sky", votes=0)
+<Choice: The sky>
+>>> c = q.choice_set.create(choice_text="Just hacking again", votes=0)
+
+# Choice objects have API access to their related Question objects.
+>>> c.question
+<Question: What's up?>
+
+# And vice versa: Question objects get access to Choice objects.
+>>> q.choice_set.all()
+<QuerySet [<Choice: Not much>, <Choice: The sky>, <Choice: Just hacking again>]>
+>>> q.choice_set.count()
+3
+
+# The API automatically follows relationships as far as you need.
+# Use double underscores to separate relationships.
+# This works as many levels deep as you want; there's no limit.
+# Find all Choices for any question whose pub_date is in this year
+# (reusing the 'current_year' variable we created above).
+>>> Choice.objects.filter(question__pub_date__year=current_year)
+<QuerySet [<Choice: Not much>, <Choice: The sky>, <Choice: Just hacking again>]>
+
+# Let's delete one of the choices. Use delete() for that.
+>>> c = q.choice_set.filter(choice_text__startswith="Just hacking")
+>>> c.delete()
+
+
+
+Creating an admin user
+$ python manage.py createsuperuser
+jrobledo:Jr1811De
+
+
+
+
+
+
+
+añadir modelos al dashboard admin
+
+polls/admin.py
+from django.contrib import admin
+
+from .models import Question
+
+admin.site.register(Question)
+
+
+
+
+
+
+
+Now in your time on the web you may have come across such beauties as ME2/Sites/dirmod.htm?sid=&type=gen&mod=Core+Pages&gid=A6CD4967199A42D9B65B1B. You will be pleased to know that Django allows us much more elegant URL patterns than that.
+
+A URL pattern is the general form of a URL - for example: /newsarchive/<year>/<month>/.
+
+Para llegar desde una URL a una vista Django usa lo que se conoce como “URLconfs”. Una URLconf mapea patrones de URL a vistas.
+
+
+

@@ -1,0 +1,24 @@
+{% extends 'polls/base.html' %}
+
+{% block content %}
+    <div class="tourpage">
+    <section class="section">
+        <section class="section-content section-content-center">
+            <h1 class="section-heading">Lobe <span style="color: #CE0F69;">Tour</span></h1>
+            <div class="section-text">
+                {% if latest_question_list %}
+                    <ul>
+                    {% for question in latest_question_list %}
+                        <li>
+                            <a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a>
+                        </li>
+                {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No polls are available.</p>
+                {% endif %}
+            </div>
+        </section>
+    </section>
+    </div>
+{% endblock %}
