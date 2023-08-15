@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['127.0.0.1', '10.18.19.23', 'chihuahua.local']
 # Application definition
 
 INSTALLED_APPS = [
-    'polls.apps.PollsConfig',
+    'seguimiento_ciudadano.apps.SeguimientoCiudadanoConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

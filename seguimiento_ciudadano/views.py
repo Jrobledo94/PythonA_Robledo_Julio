@@ -4,20 +4,21 @@ from django.shortcuts import render
 from typing import Any
 from django.db.models.query import QuerySet
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.db.models import F
-# from .models import Question, Choice
+from .models import Solicitudes
 from django.views import generic
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
+import requests
+import json
 
-
-
-class IndexView(generic.ListView):
+"""class IndexView(generic.ListView):
     template_name = "seguimiento_ciudadano/index.html"
-    context_object_name = "IndexSeguimiento"
-
+    context_object_name = "IndexSeguimiento"""
+def index(request):
+    return HttpResponse("Hello, world. You're at the seguimiento_ciudadano index.")
 
 def signin(request):
     if request.method == 'GET':
@@ -29,3 +30,28 @@ def signin(request):
             return render(request, 'seguimiento_ciudadano/login.html', {"form": AuthenticationForm, "error": "Username or password is incorrect."})
         login(request, user)
         return redirect('seguimiento_ciudadano:vote')
+
+
+def solicitud(request):
+    context = {}
+    data = {
+        "lat":41.3083,
+        "long":-72.9279,
+        "page_size":1,
+        "page":1,
+        "status":"open"
+    }
+    headers = {}
+    r = requests.get('https://seeclickfix.com/open311/v2/requests.json',data=data)
+    json_response = json.loads(r.content)
+    print(json_response)
+
+    for row in json_response:
+        soli = Solicitudes(descripcion=row['description'],
+                           request_id=row['service_request_id'],
+                           solicitud_datetime=row['requested_datetime'],
+                           street_address=row['address'],
+                           )
+        row['description']
+
+    return JsonResponse(context)
