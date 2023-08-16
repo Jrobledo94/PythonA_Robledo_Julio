@@ -1,0 +1,44 @@
+{% extends 'seguimiento_ciudadano/base.html' %}
+
+{% block content %}
+    <div class="tourpage">
+    <section class="section">
+        <section class="section-content section-content-center">
+            <h1 class="section-heading">Lista de solicitudes</span></h1>
+            <div class="section-table">
+                {% if solicitudes %}
+                    <table id="tabla_solicitudes" class="table table-bordered table-striped table-hover align-middle animate__animated animate__fadeIn">
+                        <caption>Lista de solicitudes</caption>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Descripción</th>
+                                <th>Dirección</th>
+                                <th>Fecha solicitud</th>
+                                <th>Adjunto</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">    
+                            {% for solicitud in solicitudes %}
+                            <tr>
+                                <td>{{ solicitud.request_id }}</td>
+                                <td>{{ solicitud.descripcion }}</td>
+                                <td>{{ solicitud.street_address }}</td>
+                                <td>{{ solicitud.solicitud_datetime }}</td>
+                                <td> {% if solicitud.media_url != none %} <a href="{{ solicitud.media_url }}" target="_blank">Adjunto</a> {% else %} Sin adjunto {% endif %} </td>
+                            </tr>
+                    
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <script>
+                        $("#tabla_solicitudes").DataTable();
+                    </script>
+                {% else %}
+                    <p>No hay solicitudes registradas.</p>
+                {% endif %}
+            </div>
+        </section>
+    </section>
+    </div>
+{% endblock %}

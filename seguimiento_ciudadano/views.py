@@ -8,7 +8,9 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.db.models import F
 from .models import Solicitudes
-from django.views import generic
+from django.views import generic, View
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 import requests
@@ -17,8 +19,18 @@ import json
 """class IndexView(generic.ListView):
     template_name = "seguimiento_ciudadano/index.html"
     context_object_name = "IndexSeguimiento"""
-def index(request):
-    return HttpResponse("Hello, world. You're at the seguimiento_ciudadano index.")
+
+
+class Index(View):
+    template_name = 'seguimiento_ciudadano/solicitudes.html'
+    context = {}
+    context['title'] = 'Lista de Solicitudes'
+    @method_decorator(cache_page(60*4))
+    def get(self, request):
+        solicitudes = Solicitudes.objects.all()
+        self.context['solicitudes'] = solicitudes
+        return render (request , self.template_name, self.context)
+
 
 def signin(request):
     if request.method == 'GET':
@@ -37,7 +49,7 @@ def solicitud(request):
     data = {
         "lat":41.3083,
         "long":-72.9279,
-        "page_size":1,
+        "page_size":100,
         "page":1,
         "status":"open"
     }
@@ -47,11 +59,22 @@ def solicitud(request):
     print(json_response)
 
     for row in json_response:
-        soli = Solicitudes(descripcion=row['description'],
-                           request_id=row['service_request_id'],
-                           solicitud_datetime=row['requested_datetime'],
-                           street_address=row['address'],
-                           )
-        row['description']
+        try:
+            if not Solicitudes.objects.filter(request_id=row['service_request_id']).exists():
+                soli = Solicitudes(descripcion=row['description'][:1500],
+                                request_id=row['service_request_id'],
+                                solicitud_datetime=row['requested_datetime'],
+                                street_address=row['address'],
+                                zip_code = row['zipcode'], 
+                                lat = row['lat'],
+                                long = row['long'],
+                                media_url = row['media_url'],
+                                agency_responsible = row['agency_responsible'],
+                                status = row['status']
+                                )
+                soli.save()
+        except Exception as e:
+            print(str(e))
 
+    context['respuesta'] = json_response
     return JsonResponse(context)

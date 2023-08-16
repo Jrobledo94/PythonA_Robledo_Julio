@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     {%  load static %}
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Seguimiento ciudadano - {% block title %}</title>
+    <title>Seguimiento ciudadano - {% block title %} {% endblock %}</title>
     <!-- static assets -->
-	<link rel="icon" type="image/x-icon" href="{% static 'polls/img/favicon.ico' %}">
-	<link rel="stylesheet" href="{% static 'polls/css/bootstrap/css/bootstrap.css' %}">
-	<link rel="stylesheet" href="{% static 'polls/css/lobe.css' %}">
-	<script src="{% static 'polls/css/bootstrap/js/bootstrap.bundle.js' %}"></script>
-	<script src="{% static 'polls/js/jquery-3.6.4.js' %}"></script>
-	<script defer src="{% static 'polls/css/FontAwesomePro/all.js' %}"></script>
-	<script defer src="{% static 'polls/js/lobe.js' %}"></script>
-	<link rel="stylesheet" href="{% static 'polls/Fonts/AvenirNextPro/stylesheet.css' %}" />
-	<link rel="stylesheet" href="{% static 'polls/Fonts/LabGrotesque/stylesheet.css' %}" />
-	<link rel="stylesheet" href="{% static 'polls/css/animate.css' %}" />
-  </head>
+	<link rel="icon" type="image/x-icon" href="{% static 'seguimiento_ciudadano/img/favicon.ico' %}">
+	<link rel="stylesheet" href="{% static 'seguimiento_ciudadano/css/bootstrap/css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'seguimiento_ciudadano/css/lobe.css' %}">
+	<script src="{% static 'seguimiento_ciudadano/css/bootstrap/js/bootstrap.bundle.js' %}"></script>
+	<script src="{% static 'seguimiento_ciudadano/js/jquery-3.6.4.js' %}"></script>
+	<script defer src="{% static 'seguimiento_ciudadano/css/FontAwesomePro/all.js' %}"></script>
+	<script defer src="{% static 'seguimiento_ciudadano/js/lobe.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'seguimiento_ciudadano/Fonts/AvenirNextPro/stylesheet.css' %}" />
+	<link rel="stylesheet" href="{% static 'seguimiento_ciudadano/Fonts/LabGrotesque/stylesheet.css' %}" />
+	<link rel="stylesheet" href="{% static 'seguimiento_ciudadano/css/animate.css' %}" />
+  <link href="{% static 'seguimiento_ciudadano/js/DataTables/datatables.min.css' %}" rel="stylesheet">
+  <script src="{% static 'seguimiento_ciudadano/js/DataTables/datatables.min.js' %}"></script>
+
+</head>
   <body>
   <div id="BodyWrapper">
-    {% include 'polls/navbar.html' %}
+    {% include 'seguimiento_ciudadano/navbar.html' %}
 
     <div class="allcontent">
        {% block content %}
@@ -28,6 +31,6 @@
     </div>
 
   </div>
-    {% include 'polls/footer.html' %}
+    {% include 'seguimiento_ciudadano/footer.html' %}
   </body>
 </html>
