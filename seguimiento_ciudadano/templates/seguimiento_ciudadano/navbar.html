@@ -1,3 +1,4 @@
+{% load has_group  %}
 <div class="header-container">
     <div class="header-menu-mobile" style="height: 80px; box-shadow: rgba(0, 0, 0, 0) 0px 30px 60px -10px">
         <div class="header-menu-blur"></div>
@@ -6,9 +7,19 @@
                 <a class="nav-link" href="/">
                     <div>Inicio</div>
                 </a>
+                <hr style="border:5px;">
                 {% if user.is_authenticated %}
+                <div class="nav-link">
+                    <div><i class="fa-duotone fa-user-alien fa-2x me-3"></i> {{ user.get_username }}</div>
+                </div>
+                <!-- Si el usuario esta autenticado -->
+                    {% if request.user|has_group:'Administrador'%}
+                <a class="nav-link" href="/admin">
+                    <div>Administrador</div>
+                </a>
+                    {% endif %}
                 <a class="nav-link" href="{% url 'seguimiento_ciudadano:Logout' %}">
-                    <div>Logout</div>
+                    <div>Cerrar Sesión</div>
                 </a>
                 {% else %}
                 <a class="nav-link" href="{% url 'seguimiento_ciudadano:Iniciar sesión' %}">
@@ -20,7 +31,7 @@
                 {% endif %}
             </nav>
         </div>
-        <div class="header-menu-download-button-container" style="opacity: 1; transform: scale(1);">                                  
+        <div class="header-menu-download-button-container" style="opacity: 1; transform: scale(1);">
 
         </div>
     </div>
@@ -37,7 +48,7 @@
             {% if user.is_authenticated %}
             <a class="nav-link" href="{% url 'seguimiento_ciudadano:Logout' %}">
                     <div>Cerrar Sesión</div>
-                </a>
+            </a>
             {% else %}
             <a class="nav-link" href="{% url 'seguimiento_ciudadano:Iniciar sesión' %}">
                 <div>Ingresar</div>
@@ -51,15 +62,17 @@
             {% if user.is_authenticated %}
             <div class="dropdown">
                 <button class="btn header-download-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-duotone fa-user-alien fa-2x me-3"></i> Bienvenido, {{ user.get_username }}
+                    <i class="fa-duotone fa-user-alien fa-2x me-3"></i> {{ user.get_short_name }}
                 </button>
                 <ul class="dropdown-menu">
+                    {% if request.user|has_group:'Administrador' %}
                     <li><button class="dropdown-item" type="button"><a class="nav-link" href="/admin"> Administrador </a></button></li>
+                    {% endif %}
                     <li><button class="dropdown-item" type="button"><a class="nav-link" href="{% url 'seguimiento_ciudadano:Logout' %}"> Cerrar sesión </a></button></li>
                   </ul>
             </div>
             {% else %}
-                <button class="btn">
+                <button class="btn header-download-button">
                     <a class="nav-link" href="{% url 'seguimiento_ciudadano:Iniciar sesión' %}"> Iniciar sesión</a>
                 </button>
             {% endif %}

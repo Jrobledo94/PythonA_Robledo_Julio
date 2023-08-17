@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.db.models import F
-from .models import Solicitudes
+from .models import Solicitudes_api
 from django.views import generic, View
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
@@ -29,7 +29,7 @@ class Index(View):
     context = {}
     context['title'] = 'Lista de Solicitudes'
     def get(self, request):
-        solicitudes = Solicitudes.objects.all()
+        solicitudes = Solicitudes_api.objects.all()
         self.context['solicitudes'] = solicitudes
         return render (request , self.template_name, self.context)
 
@@ -90,8 +90,8 @@ def solicitud(request):
 
     for row in json_response:
         try:
-            if not Solicitudes.objects.filter(request_id=row['service_request_id']).exists():
-                soli = Solicitudes(descripcion=row['description'][:1500],
+            if not Solicitudes_api.objects.filter(request_id=row['service_request_id']).exists():
+                soli = Solicitudes_api(descripcion=row['description'][:1500],
                                 request_id=row['service_request_id'],
                                 solicitud_datetime=row['requested_datetime'],
                                 street_address=row['address'],
