@@ -60,6 +60,12 @@ body {
     transform: translateY(-1px);
 }
 
+.nav-right .nav-link{
+    color: #767676;
+    cursor: pointer;
+    font-size: 18px;
+}
+
 .header-nav a:after{
     display: block;
     content: '';
@@ -210,7 +216,7 @@ body {
     backdrop-filter: blur(20px);
 }
 .form-container{
-    padding: 80px 30px;
+    padding: 30px;
     border-radius: 20px;
     overflow: hidden;
 }
@@ -491,7 +497,7 @@ flex-direction: column;
     .header-content-mobile{
         display: block;
     }
-    .header-download-button{
+    .header-download-button,.header-user-menu{
         display: none;
     }
     .header-content{

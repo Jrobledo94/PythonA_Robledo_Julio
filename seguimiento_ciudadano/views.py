@@ -13,9 +13,11 @@ from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import Group
 from django.contrib import messages
 import requests
 import json
+from .forms import CustomUserCreationForm
 
 """class IndexView(generic.ListView):
     template_name = "seguimiento_ciudadano/index.html"
@@ -46,21 +48,29 @@ def signin(request):
     else:
         return redirect('seguimiento_ciudadano:index')
     
-        
+
 
 def signout(request):
     logout(request)
     return redirect('seguimiento_ciudadano:index')
 
+
+
 def signup(request):
+    context = {}
     if request.method == 'GET':
-        return render(request, 'seguimiento_ciudadano/login.html', {"form": UserCreationForm})
+        context['form'] = CustomUserCreationForm
+        return render(request, 'seguimiento_ciudadano/register.html', context)
     else:
-        user = authenticate(
-            request, username=request.POST['username'], password=request.POST['password'])
-        if user is None:
-            return render(request, 'seguimiento_ciudadano/login.html', {"form": UserCreationForm, "error": "Username or password is incorrect."})
-        login(request, user)
+        form = CustomUserCreationForm(request.POST)  
+        if form.is_valid():
+            user = form.save()
+            group = Group.objects.get(name='ciudadano')
+            user.groups.add(group)
+            login(request, user)
+            #messages.success(request, 'Registro Exitoso!')
+        else:
+            return render(request, 'seguimiento_ciudadano/register.html', {'form':form})
         return redirect('seguimiento_ciudadano:index')
 
 

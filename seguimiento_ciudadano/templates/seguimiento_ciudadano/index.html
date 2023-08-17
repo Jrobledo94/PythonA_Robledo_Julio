@@ -2,6 +2,14 @@
 
 {% block content %}
     <div class="tourpage">
+        {% if messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {% for message in messages %}
+          <strong {% if message.tags %} class="{{ message.tags }}"{% endif %}><i class="fa-regular fa-circle-info"></i>{{ message }}</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          {% endfor %}
+        </div>
+        {% endif %}
     <section class="section">
         <section class="section-content section-content-center">
             <h1 class="section-heading">Lobe <span style="color: #CE0F69;">Tour</span></h1>
