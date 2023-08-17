@@ -32,7 +32,11 @@
                         </tbody>
                     </table>
                     <script>
-                        $("#tabla_solicitudes").DataTable();
+                        $("#tabla_solicitudes").DataTable({
+                            "language": {
+                                "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                            }
+                        });
                     </script>
                 {% else %}
                     <p>No hay solicitudes registradas.</p>

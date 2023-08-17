@@ -56,7 +56,6 @@ def solicitud(request):
     headers = {}
     r = requests.get('https://seeclickfix.com/open311/v2/requests.json',data=data)
     json_response = json.loads(r.content)
-    print(json_response)
 
     for row in json_response:
         try:
