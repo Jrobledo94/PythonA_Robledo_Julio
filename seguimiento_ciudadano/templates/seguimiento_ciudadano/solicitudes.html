@@ -32,10 +32,12 @@
                         </tbody>
                     </table>
                     <script>
-                        $("#tabla_solicitudes").DataTable({
-                            "language": {
-                                "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
-                            }
+                        $( document ).ready(function(){
+                            $("#tabla_solicitudes").DataTable({
+                                "language": {
+                                    "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                                }
+                            });
                         });
                     </script>
                 {% else %}

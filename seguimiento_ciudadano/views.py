@@ -13,6 +13,7 @@ from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 import requests
 import json
 
@@ -25,7 +26,6 @@ class Index(View):
     template_name = 'seguimiento_ciudadano/solicitudes.html'
     context = {}
     context['title'] = 'Lista de Solicitudes'
-    @method_decorator(cache_page(60*4))
     def get(self, request):
         solicitudes = Solicitudes.objects.all()
         self.context['solicitudes'] = solicitudes
@@ -33,15 +33,36 @@ class Index(View):
 
 
 def signin(request):
+    if not request.user.is_active:
+        if request.method == 'GET':
+            return render(request, 'seguimiento_ciudadano/login.html', {"form": AuthenticationForm})
+        else:
+            user = authenticate(
+                request, username=request.POST['username'], password=request.POST['password'])
+            if user is None:
+                return render(request, 'seguimiento_ciudadano/login.html', {"form": AuthenticationForm, "error": "Username or password is incorrect."})
+            login(request, user)
+            return redirect('seguimiento_ciudadano:index')
+    else:
+        return redirect('seguimiento_ciudadano:index')
+    
+        
+
+def signout(request):
+    logout(request)
+    return redirect('seguimiento_ciudadano:index')
+
+def signup(request):
     if request.method == 'GET':
-        return render(request, 'seguimiento_ciudadano/login.html', {"form": AuthenticationForm})
+        return render(request, 'seguimiento_ciudadano/login.html', {"form": UserCreationForm})
     else:
         user = authenticate(
             request, username=request.POST['username'], password=request.POST['password'])
         if user is None:
-            return render(request, 'seguimiento_ciudadano/login.html', {"form": AuthenticationForm, "error": "Username or password is incorrect."})
+            return render(request, 'seguimiento_ciudadano/login.html', {"form": UserCreationForm, "error": "Username or password is incorrect."})
         login(request, user)
-        return redirect('seguimiento_ciudadano:vote')
+        return redirect('seguimiento_ciudadano:index')
+
 
 
 def solicitud(request):

@@ -209,6 +209,20 @@ body {
     background: hsla(0,0%,100%,.97);
     backdrop-filter: blur(20px);
 }
+.form-container{
+    padding: 80px 30px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+.form-login-blur{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: hsla(0, 0%, 100%, 0.3);
+    backdrop-filter: blur(20px);
+}
 .mobile-nav-container{
     transition: opacity 0.5s ease;
 }
@@ -511,7 +525,7 @@ flex-direction: column;
     }
 }
 @supports ((-webkit-backdrop-filter:blur(20px)) or (backdrop-filter:blur(20px))){
-    .header-background, .header-menu-blur {
+    .header-background, .header-menu-blur  .form-login-blur{
         background-color: hsla(0,0%,100%,.5);
         -webkit-backdrop-filter: blur(20px);
         backdrop-filter: blur(20px);

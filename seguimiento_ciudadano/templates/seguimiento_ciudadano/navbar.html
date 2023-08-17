@@ -19,14 +19,14 @@
                 <a class="nav-link" href="#">
                     <div>Ayuda</div>
                 </a>
-                <a class="nav-link" href="/logout">
+                <a class="nav-link" href="{% url 'seguimiento_ciudadano:Logout' %}">
                     <div>Logout</div>
                 </a>
                 {% else %}
-                <a class="nav-link" href="/signin">
+                <a class="nav-link" href="{% url 'seguimiento_ciudadano:Iniciar sesión' %}">
                     <div>Ingresar</div>
                 </a>
-                <a class="nav-link" href="/signup">
+                <a class="nav-link" href="{% url 'seguimiento_ciudadano:Registro Usuario' %}">
                     <div>Regístrate</div>
                 </a>
                 {% endif %}
@@ -59,14 +59,14 @@
             <a class="nav-link" href="#">
                 <div>Ayuda</div>
             </a>
-            <a class="nav-link" href="/logout">
-                    <div>Logout</div>
+            <a class="nav-link" href="{% url 'seguimiento_ciudadano:Logout' %}">
+                    <div>Cerrar Sesión</div>
                 </a>
             {% else %}
-            <a class="nav-link" href="/signin">
+            <a class="nav-link" href="{% url 'seguimiento_ciudadano:Iniciar sesión' %}">
                 <div>Ingresar</div>
             </a>
-            <a class="nav-link" href="/signup">
+            <a class="nav-link" href="{% url 'seguimiento_ciudadano:Registro Usuario' %}">
                 <div>Regístrate</div>
             </a>
             {% endif %}
