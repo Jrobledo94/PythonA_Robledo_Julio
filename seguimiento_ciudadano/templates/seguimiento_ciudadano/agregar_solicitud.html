@@ -8,7 +8,7 @@
             <h1 class="section-heading">Nueva solicitud</h1>
             <div class="section-table">
                 {% if form %}
-                <form action="{% url 'seguimiento_ciudadano:nueva_solicitud' %}" method="post" class="z-1 d-flex row-cols-1 row-cols-lg-2 flex-wrap justify-content-center align-items-center" >
+                <form action="{% url 'seguimiento_ciudadano:nueva_solicitud' %}" method="post" enctype="multipart/form-data" class="z-1 d-flex row-cols-1 row-cols-lg-2 flex-wrap justify-content-center align-items-center" >
                     {% csrf_token %}
                     {% if messages %}
                     <div class="alert alert-success alert-dismissible fade show" role="alert">

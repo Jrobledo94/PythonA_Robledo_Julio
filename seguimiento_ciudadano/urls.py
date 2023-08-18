@@ -10,4 +10,5 @@ urlpatterns = [
     path("registro/", views.signup, name="Registro Usuario"),
     path("lista_solicitudes/", views.lista_solicitudes.as_view(), name="Lista_solicitudes"),
     path("nueva_solicitud/", views.nueva_solicitud.as_view(), name="nueva_solicitud"),
+    path("<int:request_id>/seguimiento/", views.seguimiento_solicitud.as_view() , name="Seguimiento"),
 ]

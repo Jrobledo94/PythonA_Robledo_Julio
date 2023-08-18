@@ -18,6 +18,7 @@ from django.contrib import messages
 import requests
 import json
 from .forms import CustomUserCreationForm, SolicitudForm
+from django.core.files.storage import FileSystemStorage
 
 """class IndexView(generic.ListView):
     template_name = "seguimiento_ciudadano/index.html"
@@ -91,10 +92,33 @@ class nueva_solicitud(View):
         formulario=SolicitudForm(data=request.POST or None )
         if formulario.is_valid():
             print("Valido")
-            formulario.save()
+            soli_a_guardar = formulario.save()
+            try:
+                upload = request.FILES['media_url']
+                fss = FileSystemStorage()
+                file = fss.save(upload.name, upload)
+                file_url = fss.url(file)
+                soli_a_guardar.media_url = file_url
+                soli_a_guardar.save()
+            except Exception as e:
+                print(str(e))
             messages.success(request, 'Se guardo correctamente')
         return render (request , 'seguimiento_ciudadano/index.html', self.context)
-        
+
+
+
+class seguimiento_solicitud(View):
+    template_name="seguimiento_ciudadano/seguimiento_solicitud.html"
+    context = {}
+    
+    def get(self, request, request_id):
+        sol_id = self.kwargs['request_id']
+        soli = get_object_or_404(Solicitudes, pk=self.kwargs['request_id'])
+        self.context["Solicitud"]  = soli
+        return render(request, self.template_name, self.context)
+
+
+
 
 def solicitud(request):
     context = {}
@@ -126,6 +150,5 @@ def solicitud(request):
                 soli.save()
         except Exception as e:
             print(str(e))
-
     context['respuesta'] = json_response
     return JsonResponse(context)
