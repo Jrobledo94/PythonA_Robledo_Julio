@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ['127.0.0.1', '10.18.19.23', 'chihuahua.local']
 
 INSTALLED_APPS = [
     'seguimiento_ciudadano.apps.SeguimientoCiudadanoConfig',
+    'catalog',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
