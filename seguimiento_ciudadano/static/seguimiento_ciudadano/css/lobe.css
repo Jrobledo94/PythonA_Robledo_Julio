@@ -306,7 +306,8 @@ flex-direction: column;
 }
 
 .section-final .section-heading{
-    max-width: 700px;
+    margin-bottom: 100px;
+    max-width: 80vw;
 }
 
 .video-container{
@@ -432,7 +433,16 @@ flex-direction: column;
 .footer .nav-link{
     font-size: large;
 }
+.btn-registro-soli{
+    position: relative;
+    font-size: 32px;
+    height: 64px;
+    width: 10em;
+}
 
+#tabla_solicitudes td{
+    padding: 20px;
+}
 @media (max-width: 650px) {
     .section{
         padding: 55px 0;
@@ -502,6 +512,7 @@ flex-direction: column;
     .header-content{
         margin: 0 24px;
     }
+
 }
 @media (max-width:800px){
     .header-content .header-nav{
@@ -534,6 +545,9 @@ flex-direction: column;
         box-shadow: 0 -0.5px 0 0 rgba(0,0,0,.1);
         padding-top: 32px;
     }
+    #tabla_solicitudes td{
+        padding: 10px;
+    }
 }
 @media (max-width: 1200px){
     .header-logo img.header-logo-regular{
@@ -541,6 +555,11 @@ flex-direction: column;
     }
     .header-logo img.header-logo-small{
         display: block;
+    }
+    .btn-registro-soli{
+        position: relative;
+        font-size: 18px;
+        height: 48px;
     }
 }
 @supports ((-webkit-backdrop-filter:blur(20px)) or (backdrop-filter:blur(20px))){

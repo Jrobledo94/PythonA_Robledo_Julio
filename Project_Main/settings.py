@@ -11,9 +11,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Quick-start development settings - unsuitable for production
@@ -28,6 +32,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', '10.18.19.23', 'chihuahua.local']
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_postalcodes_mexico.apps.DjangoPostalcodesMexicoConfig',
 ]
 
 MIDDLEWARE = [

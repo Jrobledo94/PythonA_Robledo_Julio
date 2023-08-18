@@ -3,6 +3,7 @@ from django.contrib.auth import password_validation
 from django.contrib.auth.models import User
 from django import forms
 from django.forms import ValidationError
+from .models import Solicitudes, tiposolicitud
 
 class AuthenticateUserForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control form-control-lg'}))
@@ -48,3 +49,55 @@ class CustomUserCreationForm(UserCreationForm):
             self.cleaned_data['password1'] 
         )  
         return user
+    
+
+
+### ModelForm Hereda la info de los campos del modelo, y esto evita que los widgets sean declarados como en UserCreationForm y AuthenticationForm
+### Pero a su ves, evita que tengan que ser declarados como tal, a menos que quieras hacer override de algunos datos, como labels o widgets(tipo de input)
+### En cuyo caso, se declara como >[labels|widgets] = {'nombrecampo':'valorOverride'}<
+class SolicitudForm(forms.ModelForm):
+    class Meta:
+        model = Solicitudes
+        fields = '__all__'
+        exclude = ['request_id', 'activo', 'solicitud_datetime', 'updated_at', 'status', 'agency_responsible', 'country']
+        # tipo_solicitud = forms.ModelChoiceField(queryset=tiposolicitud.objects.all(), widget=forms.Select(attrs={'class':'form-control'}))
+        # descripcion = forms.CharField(label='Descripción del caso:', max_length=1500, widget=forms.TextInput(attrs={'class':'form-control',"placeholder":"Ingresa una descripción detallada de tu consulta"}))
+        # street_address = forms.CharField(label='Dirección:', max_length=500, widget=forms.TextInput(attrs={'class':'form-control',"placeholder":"Dirección:"}))
+        # bld_number = forms.CharField(label='Número exterior:', max_length=100, widget=forms.TextInput(attrs={'class':'form-control',"placeholder":"Número exterior:"}))
+        # apt_number = forms.CharField(label='Número interior:', max_length=100, widget=forms.TextInput(attrs={'class':'form-control',"placeholder":"Ej. Apartamento 4B:"}))
+        # colonia = forms.ChoiceField(label='Colonia:', widget=forms.Select(attrs={'class':'form-control'}))
+        # city = forms.CharField(label='Ciudad:', max_length=100, widget=forms.TextInput(attrs={'class':'form-control',"placeholder":"Ejemplo: Chihuahua"}))
+        # state = forms.CharField(label='Estado:', max_length=100, widget=forms.TextInput(attrs={'class':'form-control',"placeholder":"Ejemplo: Chihuahua"}))
+        # country = forms.CharField(label='País:', max_length=50, widget=forms.TextInput(attrs={'class':'form-control',"placeholder":"Ejemplo: México"}))
+        # zip_code = forms.IntegerField(label='Código postal:', widget=forms.NumberInput(attrs={'class':'form-control',"placeholder":"31136:"}))
+        # media_url = forms.FileField(label='Número exterior:', max_length=1000, widget=forms.FileInput(attrs={'class':'form-control'}))
+        labels = {
+            'tipo_solicitud':'Tipo de solicitud:',
+            'descripcion':'Descripción del caso:',
+            'street_address':'Dirección:',
+            'bld_number':'Número exterior:',
+            'apt_number':'Número interior:',
+            'colonia':'Colonia:',
+            'city':'Ciudad:',
+            'state':'Estado:',
+            'zip_code':'Número exterior:',
+            'media_url':'Medios:',
+        }
+        widgets = {
+            'media_url': forms.FileInput(),
+            'descripcion': forms.Textarea(attrs={'rows':'2'}),
+            'colonia': forms.Select(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['tipo_solicitud'].widget.attrs.update({'class': 'form-control'})
+        self.fields['descripcion'].widget.attrs.update({'class': 'form-control', 'placeholder':'Ingresa una descripción detallada de tu consulta'})
+        self.fields['street_address'].widget.attrs.update({'class': 'form-control', 'placeholder':'Dirección:'})
+        self.fields['bld_number'].widget.attrs.update({'class': 'form-control', 'placeholder':'Número exterior:'})
+        self.fields['apt_number'].widget.attrs.update({'class': 'form-control', 'placeholder':'Ej. Apartamento 4B:'})
+        self.fields['colonia'].widget.attrs.update({'class': 'form-control', 'placeholder':'Colonia:'})
+        self.fields['city'].widget.attrs.update({'class': 'form-control', 'placeholder':'Ejemplo: Chihuahua'})
+        self.fields['state'].widget.attrs.update({'class': 'form-control', 'placeholder':'Ejemplo: Chihuahua'})
+        self.fields['zip_code'].widget.attrs.update({'class': 'form-control', 'placeholder':'Ejemplo: 31136'})
+        self.fields['media_url'].widget.attrs.update({'class': 'form-control'})

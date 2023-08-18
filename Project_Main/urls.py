@@ -16,8 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django_postalcodes_mexico import urls as django_postalcodes_mexico_urls
+from django.conf import settings #add this
+from django.conf.urls.static import static #add this
 
 urlpatterns = [
     path('', include("seguimiento_ciudadano.urls")),
     path('admin/', admin.site.urls),
-]
+    path('cp-', include(django_postalcodes_mexico_urls)),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,161 @@
+{% extends 'seguimiento_ciudadano/base.html' %}
+
+{% block content %}
+{% load static %}
+    <div class="tourpage">
+    <section class="section">
+        <section class="section-content section-content-center">
+            <h1 class="section-heading">Nueva solicitud</h1>
+            <div class="section-table">
+                {% if form %}
+                <form action="{% url 'seguimiento_ciudadano:nueva_solicitud' %}" method="post" class="z-1 d-flex row-cols-1 row-cols-lg-2 flex-wrap justify-content-center align-items-center" >
+                    {% csrf_token %}
+                    {% if messages %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {% for message in messages %}
+                        <strong {% if message.tags %} class="{{ message.tags }}"{% endif %}><i class="fa-regular fa-circle-info"></i>{{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {{ form.non_field_errors }}
+                    {{ form.field_errors }}
+                    <div class="mb-3 px-3">
+                        <label for="{{form.tipo_solicitud.id_for_label}}">{{ form.tipo_solicitud.label_tag  }}</label>
+                        {{ form.tipo_solicitud }}
+                        {% if form.tipo_solicitud.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.tipo_solicitud.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 px-3 grid-col-span-2">
+                        <label for="{{form.descripcion.id_for_label}}">{{form.descripcion.label_tag }}</label>
+                        {{ form.descripcion }}
+                        {% if form.descripcion.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.descripcion.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 px-3">
+                        <label for="{{form.street_address.id_for_label}}">{{form.street_address.label_tag }}</label>
+                        {{form.street_address.help_text}}
+                        {{ form.street_address }}
+                        {% if form.street_address.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.street_address.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 px-3">
+                        <label for="{{form.bld_number.id_for_label}}">{{form.bld_number.label_tag }}</label>
+                        {{ form.bld_number }}
+                        {% if form.bld_number.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.bld_number.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 px-3">
+                        <label for="{{form.apt_number.id_for_label}}">{{form.apt_number.label_tag }}</label>
+                        {{ form.apt_number }}
+                        {% if form.apt_number.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.apt_number.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 px-3">
+                        <label for="{{form.zip_code.id_for_label}}">{{form.zip_code.label_tag }}</label>
+                        {{ form.zip_code }}
+                        {% if form.zip_code.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.zip_code.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 px-3">
+                        <label for="{{form.colonia.id_for_label}}">{{form.colonia.label_tag }}</label>
+                        {{ form.colonia }}
+                        {% if form.colonia.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.colonia.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 px-3">
+                        <label for="{{form.city.id_for_label}}">{{form.city.label_tag }}</label>
+                        {{ form.city }}
+                        {% if form.city.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.city.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 px-3">
+                        <label for="{{form.state.id_for_label}}">{{form.state.label_tag }}</label>
+                        {{ form.state }}
+                        {% if form.state.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.state.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3 px-3">
+                        <label for="{{form.media_url.id_for_label}}">{{form.media_url.label_tag }}</label>
+                        {{ form.media_url }}
+                        {% if form.media_url.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.media_url.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 mt-5 px-3 form-check col-lg-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                    </form>
+                {% else %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Holy guacamole!</strong><i class="fa-regular fa-circle-info"></i>Hubo un problema al cargar la forma.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endif %}
+                <script>
+                    $(document).ready(function() {
+                        $("#{{form.zip_code.id_for_label}}").on( "focusout", function() {
+                            var zip = $('#{{form.zip_code.id_for_label}}').val();
+                            
+                            if (digits_count(zip)==5){
+                                $.getJSON(("/cp-"+zip), function(data) {
+                                    var options = "";
+                                    var municipio = data.municipio;
+                                    var estado = data.municipio;
+                                    for (var i = 0; i < data.colonias.length; i++) {
+                                      options += "<option value='" + data.colonias[i] + "'>" + data.colonias[i] + "</option>";
+                                    }
+                                    $("#{{form.colonia.id_for_label}}").html(options);
+                                    $("#{{form.state.id_for_label}}").val(estado);
+                                    $("#{{form.city.id_for_label}}").val(municipio);
+                                  });
+                            }
+                        });
+                        function digits_count(n) {
+                            var count = 0;
+                            if (n >= 1) ++count;
+                          
+                            while (n / 10 >= 1) {
+                              n /= 10;
+                              ++count;
+                            }
+                          
+                            return count;
+                          }
+                    });
+                </script>
+            </div>
+        </section>
+    </section>
+    
+{% endblock %}

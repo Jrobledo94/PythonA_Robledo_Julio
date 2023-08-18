@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.db.models import F
-from .models import Solicitudes_api
+from .models import Solicitudes_api, Solicitudes
 from django.views import generic, View
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
@@ -17,21 +17,18 @@ from django.contrib.auth.models import Group
 from django.contrib import messages
 import requests
 import json
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, SolicitudForm
 
 """class IndexView(generic.ListView):
     template_name = "seguimiento_ciudadano/index.html"
     context_object_name = "IndexSeguimiento"""
 
 
-class Index(View):
-    template_name = 'seguimiento_ciudadano/solicitudes.html'
+def Index(request):
+    template_name = 'seguimiento_ciudadano/index.html'
     context = {}
     context['title'] = 'Lista de Solicitudes'
-    def get(self, request):
-        solicitudes = Solicitudes_api.objects.all()
-        self.context['solicitudes'] = solicitudes
-        return render (request , self.template_name, self.context)
+    return render (request , template_name, context)
 
 
 def signin(request):
@@ -49,11 +46,9 @@ def signin(request):
         return redirect('seguimiento_ciudadano:index')
     
 
-
 def signout(request):
     logout(request)
     return redirect('seguimiento_ciudadano:index')
-
 
 
 def signup(request):
@@ -74,6 +69,32 @@ def signup(request):
         return redirect('seguimiento_ciudadano:index')
 
 
+class lista_solicitudes(View):
+    template_name = 'seguimiento_ciudadano/solicitudes.html'
+    context = {}
+    context['title'] = 'Lista de Solicitudes'
+    def get(self, request):
+        solicitudes = Solicitudes.objects.all()
+        self.context['solicitudes'] = solicitudes
+        return render(request , self.template_name, self.context)
+    
+
+class nueva_solicitud(View):
+    template_name ='seguimiento_ciudadano/agregar_solicitud.html'
+    context = {}
+    context['title'] = 'Generar nueva solicitud'
+    #def post(self, request):
+    def get(self, request):
+        self.context['form'] = SolicitudForm()
+        return render(request, self.template_name, self.context)
+    def post(self, request):
+        formulario=SolicitudForm(data=request.POST or None )
+        if formulario.is_valid():
+            print("Valido")
+            formulario.save()
+            messages.success(request, 'Se guardo correctamente')
+        return render (request , 'seguimiento_ciudadano/index.html', self.context)
+        
 
 def solicitud(request):
     context = {}

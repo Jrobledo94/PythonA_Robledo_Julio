@@ -7,20 +7,28 @@
                 <a class="nav-link" href="/">
                     <div>Inicio</div>
                 </a>
-                <hr style="border:5px;">
+                <a class="nav-link" href="{% url 'seguimiento_ciudadano:Lista_solicitudes' %}">
+                    <div>Lista de solicitudes</div>
+                </a>
                 {% if user.is_authenticated %}
+                <a class="nav-link" href="{% url 'seguimiento_ciudadano:nueva_solicitud' %}">
+                    <div>Crear Solicitud</div>
+                </a>
                 <div class="nav-link">
                     <div><i class="fa-duotone fa-user-alien fa-2x me-3"></i> {{ user.get_username }}</div>
                 </div>
-                <!-- Si el usuario esta autenticado -->
                     {% if request.user|has_group:'Administrador'%}
                 <a class="nav-link" href="/admin">
                     <div>Administrador</div>
                 </a>
                     {% endif %}
+
                 <a class="nav-link" href="{% url 'seguimiento_ciudadano:Logout' %}">
                     <div>Cerrar Sesión</div>
                 </a>
+                
+                
+
                 {% else %}
                 <a class="nav-link" href="{% url 'seguimiento_ciudadano:Iniciar sesión' %}">
                     <div>Ingresar</div>
@@ -45,10 +53,19 @@
             <a class="nav-link" href="/">
                 <div>Inicio</div>
             </a>
+            <a class="nav-link" href="{% url 'seguimiento_ciudadano:Lista_solicitudes' %}">
+                <div>Ver Solicitudes</div>
+            </a>
             {% if user.is_authenticated %}
+            
+            <a class="nav-link" href="{% url 'seguimiento_ciudadano:nueva_solicitud' %}">
+                    <div>Crear Solicitud</div>
+            </a>
+            
             <a class="nav-link" href="{% url 'seguimiento_ciudadano:Logout' %}">
                     <div>Cerrar Sesión</div>
             </a>
+
             {% else %}
             <a class="nav-link" href="{% url 'seguimiento_ciudadano:Iniciar sesión' %}">
                 <div>Ingresar</div>
@@ -62,7 +79,7 @@
             {% if user.is_authenticated %}
             <div class="dropdown">
                 <button class="btn header-download-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-duotone fa-user-alien fa-2x me-3"></i> {{ user.get_short_name }}
+                    <i class="fa-duotone fa-user-alien fa-2x me-3"></i> {{ user.get_full_name }}
                 </button>
                 <ul class="dropdown-menu">
                     {% if request.user|has_group:'Administrador' %}

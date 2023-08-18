@@ -4,7 +4,7 @@
     <div class="tourpage">
     <section class="section">
         <section class="section-content section-content-center">
-            <h1 class="section-heading">Lista de solicitudes</span></h1>
+            <h1 class="section-heading">Lista de solicitudes</h1>
             <div class="section-table">
                 {% if solicitudes %}
                     <table id="tabla_solicitudes" class="table table-bordered table-striped table-hover align-middle animate__animated animate__fadeIn">
@@ -14,6 +14,10 @@
                                 <th>ID</th>
                                 <th>Descripción</th>
                                 <th>Dirección</th>
+                                <th>Colonia</th>
+                                <th>Ciudad</th>
+                                <th>Estado</th>
+                                <th>C.P.</th>
                                 <th>Fecha solicitud</th>
                                 <th>Adjunto</th>
                             </tr>
@@ -22,8 +26,12 @@
                             {% for solicitud in solicitudes %}
                             <tr>
                                 <td>{{ solicitud.request_id }}</td>
-                                <td>{{ solicitud.descripcion }}</td>
-                                <td>{{ solicitud.street_address }}</td>
+                                <td>{{ solicitud.descripcion  }}</td>
+                                <td>{{ solicitud.street_address}} {{solicitud.bld_number}} {% if solicitud.apt_number.is_none %}{{ solicitud.apt_number}}{% endif %}</td>
+                                <td>{{ solicitud.colonia}}</td>
+                                <td>{{ solicitud.city}}</td>
+                                <td>{{ solicitud.state}}</td>
+                                <td>{{ solicitud.zip_code}}</td>
                                 <td>{{ solicitud.solicitud_datetime }}</td>
                                 <td> {% if solicitud.media_url != none %} <a href="{{ solicitud.media_url }}" target="_blank">Adjunto</a> {% else %} Sin adjunto {% endif %} </td>
                             </tr>
@@ -41,7 +49,9 @@
                         });
                     </script>
                 {% else %}
-                    <p>No hay solicitudes registradas.</p>
+                <div class="alert alert-success fade show" role="alert">
+                    <i class="fa-regular fa-circle-info"></i><strong> Holy guacamole!  </strong>  No hay solicitudes registradas
+                </div>
                 {% endif %}
             </div>
         </section>
