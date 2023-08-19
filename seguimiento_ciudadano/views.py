@@ -68,6 +68,16 @@ def signup(request):
         else:
             return render(request, 'seguimiento_ciudadano/register.html', {'form':form})
         return redirect('seguimiento_ciudadano:index')
+    
+def eliminarS(request):
+    context = {}
+    if request.method == 'POST':
+        id = int(request.POST.get('id'))
+        Solicitudes.objects.filter(pk=id).delete()
+        return HttpResponse("Solicitud_Eliminada_True")
+    else:
+        return HttpResponse("Error: Method can only be POST")
+        
 
 
 class lista_solicitudes(View):
@@ -116,7 +126,6 @@ class seguimiento_solicitud(View):
         soli = get_object_or_404(Solicitudes, pk=self.kwargs['request_id'])
         self.context["Solicitud"]  = soli
         return render(request, self.template_name, self.context)
-
 
 
 

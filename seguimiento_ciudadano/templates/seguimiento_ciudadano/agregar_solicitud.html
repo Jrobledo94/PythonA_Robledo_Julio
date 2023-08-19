@@ -137,7 +137,9 @@
                                     }
                                     $("#{{form.colonia.id_for_label}}").html(options);
                                     $("#{{form.state.id_for_label}}").val(estado);
+                                    $("#{{form.state.id_for_label}}").attr("readonly", 'True');
                                     $("#{{form.city.id_for_label}}").val(municipio);
+                                    $("#{{form.city.id_for_label}}").attr("readonly",'True');
                                   });
                             }
                         });

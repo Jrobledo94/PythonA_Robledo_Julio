@@ -84,7 +84,6 @@ class SolicitudForm(forms.ModelForm):
             'media_url':'Medios:',
         }
         widgets = {
-            'media_url': forms.FileInput(),
             'descripcion': forms.Textarea(attrs={'rows':'2'}),
             'colonia': forms.Select(),
         }

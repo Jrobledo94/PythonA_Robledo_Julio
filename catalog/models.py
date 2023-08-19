@@ -29,7 +29,7 @@ class Author(models.Model):
     class Meta:
         ordering = ['last_name', 'first_name']
     def get_absolute_url(self):
-        return reverse('author-detail', args=[str(self.id)])
+        return reverse('author-detail', args=[str(self.id)])# type: ignore >como no hay un id explícito en el modelo, asuume que no existe, asi que suprimimos este 'error'
     def __str__(self):
         return f'{self.last_name}, {self.first_name}'
 
@@ -70,4 +70,4 @@ class BookInstance(models.Model):
     class Meta:
         ordering = ['due_back']
     def __str__(self) -> str:
-         return f'{self.id} ({self.book.title})'
+         return f'{self.id} ({self.book.title})'# type: ignore >esta vaina del Pylance no reconoce foreign keys desde dentro otro modelo

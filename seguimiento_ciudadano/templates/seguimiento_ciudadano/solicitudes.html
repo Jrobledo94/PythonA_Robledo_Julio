@@ -20,12 +20,16 @@
                                 <th>C.P.</th>
                                 <th>Fecha solicitud</th>
                                 <th>Adjunto</th>
+                                {% load has_group  %}
+                                {% if user.is_authenticated and request.user|has_group:'Administrador' or request.user|has_group:'Servidor'%}
+                                <th>Acciones</th>
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody class="table-group-divider">    
                             {% for solicitud in solicitudes %}
-                            <tr>
-                                <td>{{ solicitud.request_id }}</td>
+                            <tr id="row_{{ solicitud.request_id }}">
+                                <td >{{ solicitud.request_id }}</td>
                                 <td>{{ solicitud.descripcion  }}</td>
                                 <td>{{ solicitud.street_address}} {{solicitud.bld_number}} {% if solicitud.apt_number.is_none %}{{ solicitud.apt_number}}{% endif %}</td>
                                 <td>{{ solicitud.colonia}}</td>
@@ -34,6 +38,14 @@
                                 <td>{{ solicitud.zip_code}}</td>
                                 <td>{{ solicitud.solicitud_datetime }}</td>
                                 <td> {% if solicitud.media_url != none %} <a href="{{ solicitud.media_url }}" target="_blank">Adjunto</a> {% else %} Sin adjunto {% endif %} </td>
+                                {% if user.is_authenticated and request.user|has_group:'Administrador' or request.user|has_group:'Servidor'%}
+                                <td>
+                                    <div btn class="btn btn-group">
+                                        <a href="{% url 'seguimiento_ciudadano:Seguimiento' request_id=solicitud.request_id%}"><button class="btn btn-primary"> Seguimiento</button></a>
+                                        <button class="btn btn-danger" onclick="eliminar({{solicitud.request_id}})">Eliminar</button>
+                                    </div>
+                                </td>
+                                {% endif %}
                             </tr>
                     
                             {% endfor %}
@@ -46,7 +58,30 @@
                                     "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
                                 }
                             });
+
+
+                            
                         });
+                        function eliminar(id){
+                            if(confirm('¿Está seguro de que quiere eliminar el producto? id: '+id)){
+                                $.ajax({
+                            method: "POST",
+                            url: "{% url 'seguimiento_ciudadano:eliminar' %}",
+                            headers: {
+                                'X-CSRFToken':'{{ csrf_token }}'
+                            },
+                            data: {
+                                  "id":id,
+                            },
+                            success: function(response){
+                                debugger;
+                                $("#row_"+id).remove();
+                            }
+                          });
+                            }
+                            
+                    
+                        }
                     </script>
                 {% else %}
                 <div class="alert alert-success fade show" role="alert">
