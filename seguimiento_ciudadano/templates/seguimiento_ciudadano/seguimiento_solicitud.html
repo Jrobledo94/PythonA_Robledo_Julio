@@ -3,47 +3,133 @@
 {% block content %}
     <div class="tourpage">
     <section class="section">
-        <section class="section-content section-content-center">
-            <h1 class="section-heading">Lista de solicitudes</h1>
-            <div class="section-table">
+        {% if messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {% for message in messages %}
+            <strong {% if message.tags %} class="{{ message.tags }}"{% endif %}><i class="fa-regular fa-circle-info"></i>{{ message }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <section class="section-content section-content-center animate animate__fadeIn">
+            <h1 class="head-text-body-emphasis">Detalles de la solicitud #{{Solicitud.request_id}}</h1>
+            <div class="section-table mt-5">
                 {% if Solicitud %}
-                    <table id="tabla_solicitudes" class="table table-bordered table-striped table-hover align-middle animate__animated animate__fadeIn">
-                        <caption>Lista de solicitudes</caption>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Descripción</th>
-                                <th>Dirección</th>
-                                <th>Colonia</th>
-                                <th>Ciudad</th>
-                                <th>Estado</th>
-                                <th>C.P.</th>
-                                <th>Fecha solicitud</th>
-                                <th>Adjunto</th>
-                            </tr>
-                        </thead>
-                        <tbody class="table-group-divider">    
-                            <tr>
-                                <td>{{ Solicitud.request_id }}</td>
-                                <td>{{ Solicitud.descripcion  }}</td>
-                                <td>{{ Solicitud.street_address}} {{Solicitud.bld_number}} {% if Solicitud.apt_number.is_none %}{{ Solicitud.apt_number}}{% endif %}</td>
-                                <td>{{ Solicitud.colonia}}</td>
-                                <td>{{ Solicitud.city}}</td>
-                                <td>{{ Solicitud.state}}</td>
-                                <td>{{ Solicitud.zip_code}}</td>
-                                <td>{{ Solicitud.solicitud_datetime }}</td>
-                                <td> {% if Solicitud.media_url != none %} <a href="{{ Solicitud.media_url }}" target="_blank">Adjunto</a> {% else %} Sin adjunto {% endif %} </td>
-                            </tr>
+                <div class="d-grid" style="grid-template-columns: 2fr 1fr">
+                    <div class="d-flex flex-row  row-cols-1 row-cols-md-2 row-cols-lg-4 flex-wrap font-grotesque align-items-center align-content-center"> 
+                        <div class"col-12 " style="margin-bottom: 16px;">
+                            <h4 class="fw-light">Descripción de los hechos:</h4>
+                            <p>{{ Solicitud.descripcion }}</p>
+                        </div>
+                        <div class"col-4  " style="margin-bottom: 16px;">
+                            <h4 class="fw-light">Dirección</h4>
+                            <p>{{ Solicitud.street_address}} {{Solicitud.bld_number}} {% if Solicitud.apt_number.is_none %}{{ Solicitud.apt_number}}{% endif %}</p>
+                        </div>
+                        <div class"col-3  " style="margin-bottom: 16px;">
+                            <h4 class="fw-light">Colonia:</h4>
+                            <p>{{ Solicitud.colonia}}</p>
+                        </div>
+                        <div class"col  " style="margin-bottom: 16px;">
+                            <h4 class="fw-light">Ciudad/Municipio:</h4>
+                            <p>{{ Solicitud.city }}</p>
+                        </div>
+                        <div class"col  " style="margin-bottom: 16px;">
+                            <h4 class="fw-light">Estado:</h4>
+                            <p>{{ Solicitud.state }}</p>
+                        </div>
+                        <div class"col  " style="margin-bottom: 16px;">
+                            <h4 class="fw-light">Código postal:</h4>
+                            <p>{{ Solicitud.zip_code }}</p>
+                        </div>
+                        <div class"col  " style="margin-bottom: 16px;">
+                            <h4 class="fw-light">Solicitud hecha el:</h4>
+                            <p>{{ Solicitud.solicitud_datetime }}</p>
+                        </div>
+                        <div class"col  " style="margin-bottom: 16px;">
+                            <h4 class="fw-light">Status:</h4>
+                            <p>{{ Solicitud.status }}</p>
+                        </div>
+    
+                    </div>
+
+                    <div class="evidencia-wrapper d-flex flex-column align-items-center justify-content-center">
+                        <h4 class"fw-light">Evidencia adjunta:</h4>
+                        <div class"img-wrapper" >
+                            {% if Solicitud.media_url %}
+                            <a href="{{Solicitud.media_url}}"> 
+                                <img src="{{Solicitud.media_url}}" alt="evidencia" style="max-width: 400px; max-height:300px">
+                            </a>
+                            {% else %}
+                            <div>No hay evidencias disponibles para esta solicitud</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+
+
+
+
                     
-                        </tbody>
-                    </table>
                 {% else %}
                 <div class="alert alert-success fade show" role="alert">
-                    <i class="fa-regular fa-circle-info"></i><strong> Holy guacamole!  </strong>  No hay solicitudes registradas
+                    <i class="fa-regular fa-circle-info"></i><strong> Holy guacamole!  </strong>  No se encuentra la solicitud
                 </div>
+                {% endif %}
+            </div>
+            <div class"section font-grotesque mb-3 " style="position: relative; min-width: 60vw;">
+                
+                <button class="btn btn-primary position-absolute" style="right:0;" data-bs-toggle="modal" data-bs-target="#agregar_actividad"><i class="fa-solid fa-plus"></i> Agregar actividad</button>
+                <h4>Historial de actividades</h4>
+                {% if seguimiento_solicitud %}
+                        <ol class="list-group list-group-numbered mt-3 ">
+                            {% for actividad in seguimiento_solicitud reversed%}
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                              <div class="ms-2 me-auto">
+                                <div class="fw-bold">{{actividad.fecha_actualizacion}}</div>
+                                {{actividad.texto_status}}
+                              </div>
+                              <a href="{{actividad.evidencia}}"> <img src="{{actividad.evidencia}}" alt="evidencia" style="max-width: 400px; max-height:64px; border-radius:10px;"></a>
+                            </li>
+                            {% endfor %}
+                          </ol>
                 {% endif %}
             </div>
         </section>
     </section>
     </div>
+
+  
+  <!-- Modal -->
+    <div class="modal fade" id="agregar_actividad" tabindex="-1" aria-labelledby="Agregar Actividad" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Agrega una actualización para el caso #{{Solicitud.request_id}}</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body mt-3" style="padding:2em;">
+                <form id="agregar_actividad" action="{% url 'seguimiento_ciudadano:Seguimiento' request_id=Solicitud.request_id %}" method="post" enctype="multipart/form-data">
+                    {{ formSolicitud.as_div}}
+                    {{ formActividad.as_div }}
+                    <button id="savehide" type="submit" style="display:none;"></button>
+                    {% csrf_token %}
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" onclick="clicksave()">Save changes</button>
+                </div>
+            </div>
+            
+        </div>
+        <script>
+            function clicksave(){
+                console.log("enttreee");
+                var button = $("#savehide")
+                button.click();
+                console.log(button);
+            }
+        </script>
+    </div>
+  </div>
 {% endblock %}

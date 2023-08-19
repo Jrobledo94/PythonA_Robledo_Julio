@@ -5,6 +5,11 @@ body {
     -moz-osx-font-smoothing: grayscale;
     color: #333;
 }
+
+.font-grotesque{
+    font-family: Lab Grotesque,Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-weight: 400;
+}
 .header-container{
     z-index: 100;
     width: 100%;
@@ -276,7 +281,7 @@ flex-direction: column;
 
 .section-heading{
     font-family: Lab Grotesque,Helvetica Neue,Helvetica,Arial,sans-serif;
-    font-size: 80px;
+    font-size: 64px;
     line-height: 1.05;
     margin-bottom: 12px;
     font-weight: 900;
@@ -380,12 +385,12 @@ flex-direction: column;
 .footer{
         padding: 0 32px;
     }
-.modal-dialog{
+#modalVideo .modal-dialog{
     height: 100%;
     height: -webkit-fill-available;
               /* WebKit-based browsers will ignore this. */
 }
-.modal.fade.show {
+#modalVideo .modal.fade.show {
     backdrop-filter: blur(5px);
 }
 #modalVideo{
@@ -394,10 +399,10 @@ flex-direction: column;
 #modalVideo .modal-dialog{
     --bs-modal-width: 90%;
 }
-.modal-content{
+#modalVideo .modal-content{
     height: 100%;
 }
-.modal-body{
+#modalVideo .modal-body{
     padding: 0;
 }
 .embed-responsive, .embed-responsive-item{

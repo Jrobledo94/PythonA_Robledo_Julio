@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.db.models import F
-from .models import Solicitudes_api, Solicitudes
+from .models import Solicitudes_api, Solicitudes, Seguimiento_solicitud
 from django.views import generic, View
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
@@ -17,7 +17,7 @@ from django.contrib.auth.models import Group
 from django.contrib import messages
 import requests
 import json
-from .forms import CustomUserCreationForm, SolicitudForm
+from .forms import CustomUserCreationForm, SolicitudForm, ActividadSeguimientoForm, SolicitudStatusForm
 from django.core.files.storage import FileSystemStorage
 
 """class IndexView(generic.ListView):
@@ -122,12 +122,36 @@ class seguimiento_solicitud(View):
     context = {}
     
     def get(self, request, request_id):
-        sol_id = self.kwargs['request_id']
-        soli = get_object_or_404(Solicitudes, pk=self.kwargs['request_id'])
+        soli = get_object_or_404(Solicitudes, pk=request_id)
+        actividades = Seguimiento_solicitud.objects.filter(solicitud_id = soli)
         self.context["Solicitud"]  = soli
+        self.context['formSolicitud'] = SolicitudStatusForm(instance=soli)
+        self.context["formActividad"] = ActividadSeguimientoForm()
+        self.context['seguimiento_solicitud'] = actividades
         return render(request, self.template_name, self.context)
-
-
+    def post(self, request, request_id):
+        formularioActividad=ActividadSeguimientoForm(data=request.POST or None )
+        formularioSolicitud=SolicitudStatusForm(data=request.POST or None )
+        Solicitud = Solicitudes.objects.get(pk=request_id)
+        Solicitud.status = request.POST['status']
+        Solicitud.save()
+        if formularioActividad.is_valid() and formularioSolicitud.is_valid():
+            print("Valido")
+            try:
+                actividad = formularioActividad.save(commit=False)
+                actividad.solicitud_id = Solicitud
+                upload = request.FILES['evidencia']
+                fss = FileSystemStorage()
+                file = fss.save(upload.name, upload)
+                file_url = fss.url(file)
+                actividad.evidencia = file_url
+                actividad.save()
+            except Exception as e:
+                print(str(e))
+            messages.success(request, 'Se guardo correctamente')
+            self.context['request_id'] = request_id
+            return redirect(request.META['HTTP_REFERER'])
+        return render (request , 'seguimiento_ciudadano/index.html', self.context)
 
 def solicitud(request):
     context = {}

@@ -3,7 +3,7 @@ from django.contrib.auth import password_validation
 from django.contrib.auth.models import User
 from django import forms
 from django.forms import ValidationError
-from .models import Solicitudes, tiposolicitud
+from .models import Solicitudes, tiposolicitud, Seguimiento_solicitud
 
 class AuthenticateUserForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control form-control-lg'}))
@@ -100,3 +100,33 @@ class SolicitudForm(forms.ModelForm):
         self.fields['state'].widget.attrs.update({'class': 'form-control', 'placeholder':'Ejemplo: Chihuahua'})
         self.fields['zip_code'].widget.attrs.update({'class': 'form-control', 'placeholder':'Ejemplo: 31136'})
         self.fields['media_url'].widget.attrs.update({'class': 'form-control'})
+
+
+
+class SolicitudStatusForm(forms.ModelForm):
+    class Meta:
+        model = Solicitudes
+        fields = {'status'}
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['status'].widget.attrs.update({'class': 'form-control'})
+
+class ActividadSeguimientoForm(forms.ModelForm):
+    class Meta:
+        model = Seguimiento_solicitud
+        fields = '__all__'
+        exclude = ['fecha_actualizacion','tipo_solicitud', 'solicitud_id']
+
+        labels = {
+            'texto_status':'Actualización del caso:',
+            'status': 'actualiza el status de la Solicitud',
+            'evidencia':'Medios:',
+        }
+        widgets = {
+            'texto_status': forms.Textarea(attrs={'rows':'2'}),
+        }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['texto_status'].widget.attrs.update({'class': 'form-control'})
+        self.fields['evidencia'].widget.attrs.update({'class': 'form-control'})
