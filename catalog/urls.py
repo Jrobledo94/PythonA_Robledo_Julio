@@ -6,4 +6,8 @@ urlpatterns = [
     path("", views.index, name="index"),
     path('Authors/', views.AuthorList.as_view()),
     path('Authors/<int:author_id>/', views.AuthorDetail.as_view()),
+    path('Books/', views.BookList.as_view()),
+    path('Books/<int:Book_id>/', views.BookDetail.as_view()),
+    path('BookInstances/', views.BookInstanceList.as_view()),
+    path('BookInstances/<int:BookInstance_id>/', views.BookInstanceDetail.as_view()),
 ]

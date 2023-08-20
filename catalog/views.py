@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import Http404, HttpResponse
 from .models import Book, Author, BookInstance, Genre
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -32,6 +34,7 @@ def index(request):
 
 
 class AuthorList(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         all_author = Author.objects.all()
         serializers = AuthorSerializer(all_author, many=True)
@@ -64,4 +67,75 @@ class AuthorDetail(APIView):
     def delete(self, request, author_id):
         author = self.get_object(author_id)
         author.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class BookList(APIView):
+    def get(self, request):
+        all_Book = Book.objects.all()
+        serializers = BookSerializer(all_Book, many=True)
+        return Response(serializers.data)
+    def post(self, request):
+        serializer = BookSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
+class BookDetail(APIView):
+    def get_object(self, Book_id):
+        try:
+            return Book.objects.get(pk=Book_id)
+        except Book.DoesNotExist:
+            raise Http404
+        
+    def get(self, request, Book_id):
+        Book = self.get_object(Book_id)
+        serializer = BookSerializer(Book, data=request.data)
+        return Response(serializer.data)
+    def put(self, request, pk):
+        Book = self.get_object(pk)
+        serializer = BookSerializer(Book, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, Book_id):
+        Book = self.get_object(Book_id)
+        Book.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class BookInstanceList(APIView):
+    def get(self, request):
+        all_BookInstance = BookInstance.objects.all()
+        serializers = BookInstanceSerializer(all_BookInstance, many=True)
+        return Response(serializers.data)
+    def post(self, request):
+        serializer = BookInstanceSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
+class BookInstanceDetail(APIView):
+    def get_object(self, BookInstance_id):
+        try:
+            return BookInstance.objects.get(pk=BookInstance_id)
+        except BookInstance.DoesNotExist:
+            raise Http404
+        
+    def get(self, request, BookInstance_id):
+        BookInstance = self.get_object(BookInstance_id)
+        serializer = BookInstanceSerializer(BookInstance, data=request.data)
+        return Response(serializer.data)
+    def put(self, request, BookInstance_id):
+        BookInstance = self.get_object(BookInstance_id)
+        serializer = BookInstanceSerializer(BookInstance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, BookInstance_id):
+        BookInstance = self.get_object(BookInstance_id)
+        BookInstance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

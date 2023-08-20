@@ -1,24 +1,26 @@
 from django.shortcuts import render
 
 # Create your views here.
-from typing import Any
-from django.db.models.query import QuerySet
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.urls import reverse
-from django.db.models import F
+from .forms import CustomUserCreationForm, SolicitudForm, ActividadSeguimientoForm, SolicitudStatusForm
 from .models import Solicitudes_api, Solicitudes, Seguimiento_solicitud
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.models import Group
+from django.core.files.storage import FileSystemStorage
+from django.db.models import F
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views import generic, View
 from django.views.decorators.cache import cache_page
-from django.utils.decorators import method_decorator
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import Group
-from django.contrib import messages
-import requests
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 import json
-from .forms import CustomUserCreationForm, SolicitudForm, ActividadSeguimientoForm, SolicitudStatusForm
-from django.core.files.storage import FileSystemStorage
+import requests
 
 """class IndexView(generic.ListView):
     template_name = "seguimiento_ciudadano/index.html"
@@ -69,6 +71,8 @@ def signup(request):
             return render(request, 'seguimiento_ciudadano/register.html', {'form':form})
         return redirect('seguimiento_ciudadano:index')
     
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def eliminarS(request):
     context = {}
     if request.method == 'POST':
@@ -90,7 +94,8 @@ class lista_solicitudes(View):
         return render(request , self.template_name, self.context)
     
 
-class nueva_solicitud(View):
+class nueva_solicitud(APIView):
+    permission_classes = [IsAuthenticated]
     template_name ='seguimiento_ciudadano/agregar_solicitud.html'
     context = {}
     context['title'] = 'Generar nueva solicitud'
