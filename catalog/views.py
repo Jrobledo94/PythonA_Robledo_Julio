@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import Http404, HttpResponse
 from .models import Book, Author, BookInstance, Genre
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -55,26 +55,31 @@ class AuthorDetail(APIView):
         
     def get(self, request, author_id):
         author = self.get_object(author_id)
-        serializer = AuthorSerializer(author, data=request.data)
+        
+        serializer = AuthorSerializer(author)
         return Response(serializer.data)
-    def put(self, request, pk):
-        author = self.get_object(pk)
+    def put(self, request, author_id):
+        author = self.get_object(author_id)
         serializer = AuthorSerializer(author, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    @api_view(['DELETE'])
+    @permission_classes([IsAuthenticated])
     def delete(self, request, author_id):
         author = self.get_object(author_id)
         author.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
 
 class BookList(APIView):
     def get(self, request):
         all_Book = Book.objects.all()
         serializers = BookSerializer(all_Book, many=True)
         return Response(serializers.data)
+    @api_view(['POST'])
+    @permission_classes([IsAuthenticated])
     def post(self, request):
         serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
@@ -91,10 +96,11 @@ class BookDetail(APIView):
         
     def get(self, request, Book_id):
         Book = self.get_object(Book_id)
-        serializer = BookSerializer(Book, data=request.data)
+        serializer = BookSerializer(Book)
         return Response(serializer.data)
-    def put(self, request, pk):
-        Book = self.get_object(pk)
+    
+    def put(self, request, Book_id):
+        Book = self.get_object(Book_id)
         serializer = BookSerializer(Book, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -104,7 +110,7 @@ class BookDetail(APIView):
         Book = self.get_object(Book_id)
         Book.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
 class BookInstanceList(APIView):
     def get(self, request):
         all_BookInstance = BookInstance.objects.all()

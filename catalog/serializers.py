@@ -16,6 +16,7 @@ class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ('first_name','last_name','date_of_birth','date_of_death', 'Books_list')
+        extra_kwargs = {'Books_list': {'required': False}}
     def create(self, validated_data):
         Books_data = validated_data.pop("Books_list")
         authorr = Author.objects.create(**validated_data)

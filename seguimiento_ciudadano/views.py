@@ -92,6 +92,15 @@ class lista_solicitudes(View):
         solicitudes = Solicitudes.objects.all()
         self.context['solicitudes'] = solicitudes
         return render(request , self.template_name, self.context)
+class lista_solicitudes_api(View):
+    template_name = 'seguimiento_ciudadano/solicitudes_api.html'
+    context = {}
+    context['title'] = 'Lista de Solicitudes'
+    def get(self, request):
+        solicitudes = Solicitudes_api.objects.all()
+        self.context['solicitudes'] = solicitudes
+        return render(request , self.template_name, self.context)
+
     
 
 class nueva_solicitud(APIView):
@@ -159,34 +168,40 @@ class seguimiento_solicitud(View):
         return render (request , 'seguimiento_ciudadano/index.html', self.context)
 
 def solicitud(request):
-    context = {}
-    data = {
-        "lat":41.3083,
-        "long":-72.9279,
-        "page_size":100,
-        "page":1,
-        "status":"open"
-    }
-    headers = {}
-    r = requests.get('https://seeclickfix.com/open311/v2/requests.json',data=data)
-    json_response = json.loads(r.content)
-
-    for row in json_response:
-        try:
-            if not Solicitudes_api.objects.filter(request_id=row['service_request_id']).exists():
-                soli = Solicitudes_api(descripcion=row['description'][:1500],
-                                request_id=row['service_request_id'],
-                                solicitud_datetime=row['requested_datetime'],
-                                street_address=row['address'],
-                                zip_code = row['zipcode'], 
-                                lat = row['lat'],
-                                long = row['long'],
-                                media_url = row['media_url'],
-                                agency_responsible = row['agency_responsible'],
-                                status = row['status']
-                                )
-                soli.save()
-        except Exception as e:
-            print(str(e))
-    context['respuesta'] = json_response
+    json_pages = []
+    context={}
+    for page in range(1,5):
+        context = {}
+        data = {
+            "lat":41.3083,
+            "long":-72.9279,
+            "page_size":200,
+            "page":page,
+            "status":"open"
+        }
+        headers = {}
+        r = requests.get('https://seeclickfix.com/open311/v2/requests.json',data=data)
+        json_response = json.loads(r.content)
+        if page == 1:
+            json_pages = json.loads(r.content)
+        for row in json_response:
+            try:
+                if not Solicitudes_api.objects.filter(request_id=row['service_request_id']).exists():
+                    soli = Solicitudes_api(descripcion=row['description'][:1500],
+                                    request_id=row['service_request_id'],
+                                    solicitud_datetime=row['requested_datetime'],
+                                    street_address=row['address'],
+                                    zip_code = row['zipcode'], 
+                                    lat = row['lat'],
+                                    long = row['long'],
+                                    media_url = row['media_url'],
+                                    agency_responsible = row['agency_responsible'],
+                                    status = row['status']
+                                    )
+                
+                    soli.save()
+            except Exception as e:
+                print(str(e))
+        if page >1: json_pages.append(json_response)
+    context['respuesta'] = json_pages
     return JsonResponse(context)
