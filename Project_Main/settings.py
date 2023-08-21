@@ -92,6 +92,7 @@ DATABASES = {
         'PASSWORD': 'Jr1811De',
         'HOST': 'localhost',
         'PORT': '3306',
+        'CONN_MAX_AGE': None, 
     }
 }
 
