@@ -15,7 +15,6 @@ class BookSerializer(serializers.ModelSerializer):
 
 # Autores con una lista de sus libros en formato json
 class AuthorandbooksSerializer(serializers.ModelSerializer):
-    print('entre al authorserializer')
     Books_list = BookSerializer(many=True, required = False)
     class Meta:
         model = Author

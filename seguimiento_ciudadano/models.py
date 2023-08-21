@@ -1,8 +1,7 @@
-from datetime import datetime    
 from django.db import models
 from django.urls import reverse
 import uuid
-
+from django.utils import timezone
 # Create your models here.
 
 class tiposolicitud(models.Model):
@@ -29,7 +28,7 @@ class Solicitudes(models.Model):
     country = models.CharField(max_length=50, default='México')
     zip_code = models.IntegerField()
     colonia = models.CharField(max_length=200, null = True, blank=True)
-    solicitud_datetime =  models.DateTimeField(auto_now=True ,null=True, blank=True)
+    solicitud_datetime =  models.DateTimeField(null=False, blank=False, default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True ,null=True, blank=True)
     status = models.CharField(max_length=20, default='abierto')
     media_url = models.FileField(null = True, blank=True)
@@ -57,7 +56,7 @@ class Solicitudes_api(models.Model):
     zip_code = models.IntegerField()
     lat = models.FloatField()
     long = models.FloatField()
-    solicitud_datetime =  models.DateTimeField(null=True, blank=True, default=datetime.now)
+    solicitud_datetime =  models.DateTimeField(null=True, blank=True, default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True ,null=True, blank=True)
     status = models.CharField(max_length=20)
     media_url = models.CharField(max_length=1000, null = True, blank=True)

@@ -21,6 +21,7 @@ from django.conf import settings #add this
 from django.conf.urls.static import static #add this
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 from rest_framework_simplejwt.views import TokenVerifyView
+from seguimiento_ciudadano import urls as surls
 
 urlpatterns = [
     path('', include("seguimiento_ciudadano.urls")),
