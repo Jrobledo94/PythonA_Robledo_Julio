@@ -10,21 +10,36 @@ class BookSerializer(serializers.ModelSerializer):
             rep['author'] = f'{instance.author.last_name}, {instance.author.first_name}'
             return rep
 
-class AuthorSerializer(serializers.ModelSerializer):
+
+
+
+# Autores con una lista de sus libros en formato json
+class AuthorandbooksSerializer(serializers.ModelSerializer):
     print('entre al authorserializer')
-    Books_list = BookSerializer(many=True)
+    Books_list = BookSerializer(many=True, required = False)
     class Meta:
         model = Author
         fields = ('first_name','last_name','date_of_birth','date_of_death', 'Books_list')
-        extra_kwargs = {'Books_list': {'required': False}}
     def create(self, validated_data):
-        Books_data = validated_data.pop("Books_list")
-        authorr = Author.objects.create(**validated_data)
-        for book in Books_data:
-            bookObject = Book.objects.create(author=authorr, title=book['title'], summary=book['summary'], isbn=book['isbn'])
-            for genre in book['genre']:
-                bookObject.genre.add(genre)
+        print(type(validated_data))
+        if 'Books_list' in validated_data:
+            Books_data = validated_data.pop("Books_list")
+            authorr = Author.objects.create(**validated_data)
+            for book in Books_data:
+                bookObject = Book.objects.create(author=authorr, title=book['title'], summary=book['summary'], isbn=book['isbn'])
+                for genre in book['genre']:
+                    bookObject.genre.add(genre)
+        else:
+            authorr = Author.objects.create(**validated_data)
         return authorr
+
+
+
+# Sólo autores, para poder agregar sólo autor
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Author
+        fields = '__all__'
 
 class BookInstanceSerializer(serializers.ModelSerializer):
     class Meta:

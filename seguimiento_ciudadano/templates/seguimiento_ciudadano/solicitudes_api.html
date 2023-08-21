@@ -32,10 +32,41 @@
                         </tbody>
                     </table>
                     <script>
-                        $("#tabla_solicitudes").DataTable();
+                        $( document ).ready(function(){
+                            $("#tabla_solicitudes").DataTable({
+                                "language": {
+                                    "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                                }
+                            });
+
+
+                            
+                        });
+                        function eliminar(id){
+                            if(confirm('¿Está seguro de que quiere eliminar el producto? id: '+id)){
+                                $.ajax({
+                            method: "POST",
+                            url: "{% url 'seguimiento_ciudadano:eliminar' %}",
+                            headers: {
+                                'X-CSRFToken':'{{ csrf_token }}'
+                            },
+                            data: {
+                                  "id":id,
+                            },
+                            success: function(response){
+                                debugger;
+                                $("#row_"+id).remove();
+                            }
+                          });
+                            }
+                            
+                    
+                        }
                     </script>
                 {% else %}
-                    <p>No hay solicitudes registradas.</p>
+                <div class="alert alert-success fade show" role="alert">
+                    <i class="fa-regular fa-circle-info"></i><strong> Holy guacamole!  </strong>  No hay solicitudes registradas
+                </div>
                 {% endif %}
             </div>
         </section>

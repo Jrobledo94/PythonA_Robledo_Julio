@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_postalcodes_mexico.apps.DjangoPostalcodesMexicoConfig',
     'rest_framework_simplejwt',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -124,7 +125,10 @@ TIME_ZONE = 'America/Chihuahua'
 USE_I18N = True
 
 USE_TZ = True
-
+GRAPH_MODELS = {
+    "all_applications": True, # Show all applications in the diagram (False by default)
+    "group_models": True  # Group models together if they have same app label and are in one of the apps specified below
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

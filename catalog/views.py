@@ -2,11 +2,13 @@ from django.shortcuts import render
 from django.http import Http404, HttpResponse
 from .models import Book, Author, BookInstance, Genre
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import AuthorSerializer,BookInstanceSerializer,BookSerializer,GenreSerializer,LanguageSerializer
+from .serializers import AuthorSerializer, AuthorandbooksSerializer,BookInstanceSerializer,BookSerializer,GenreSerializer,LanguageSerializer
+from rest_framework_simplejwt.tokens import AccessToken
+from django.contrib.auth.models import User
 # Create your views here.
 
 def index(request):
@@ -45,6 +47,18 @@ class AuthorList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+class AuthorBooksList(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        all_author = Author.objects.all()
+        serializers = AuthorandbooksSerializer(all_author, many=True)
+        return Response(serializers.data)
+    def post(self, request):
+        serializer = AuthorandbooksSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
 class AuthorDetail(APIView):
     def get_object(self, author_id):
@@ -78,8 +92,7 @@ class BookList(APIView):
         all_Book = Book.objects.all()
         serializers = BookSerializer(all_Book, many=True)
         return Response(serializers.data)
-    @api_view(['POST'])
-    @permission_classes([IsAuthenticated])
+    permission_classes= [IsAdminUser]
     def post(self, request):
         serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
@@ -117,6 +130,7 @@ class BookInstanceList(APIView):
         serializers = BookInstanceSerializer(all_BookInstance, many=True)
         return Response(serializers.data)
     def post(self, request):
+        permission_classes = [IsAdminUser]
         serializer = BookInstanceSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -145,3 +159,5 @@ class BookInstanceDetail(APIView):
         BookInstance = self.get_object(BookInstance_id)
         BookInstance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+

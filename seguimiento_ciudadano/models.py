@@ -1,3 +1,4 @@
+from datetime import datetime    
 from django.db import models
 from django.urls import reverse
 import uuid
@@ -56,7 +57,7 @@ class Solicitudes_api(models.Model):
     zip_code = models.IntegerField()
     lat = models.FloatField()
     long = models.FloatField()
-    solicitud_datetime =  models.DateTimeField(auto_now_add=True ,null=True, blank=True)
+    solicitud_datetime =  models.DateTimeField(null=True, blank=True, default=datetime.now)
     updated_at = models.DateTimeField(auto_now=True ,null=True, blank=True)
     status = models.CharField(max_length=20)
     media_url = models.CharField(max_length=1000, null = True, blank=True)
