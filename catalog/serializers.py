@@ -5,6 +5,7 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ('title','author','summary','isbn','genre')
+        depth = 1 # This will include the fields of the foreign key to BookInstance
     def to_representation(self, instance):
             rep = super(BookSerializer, self).to_representation(instance)
             rep['author'] = f'{instance.author.last_name}, {instance.author.first_name}'

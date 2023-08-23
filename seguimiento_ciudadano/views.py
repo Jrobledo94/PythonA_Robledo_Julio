@@ -127,6 +127,8 @@ class nueva_solicitud(APIView):
             except Exception as e:
                 print(str(e))
             messages.success(request, 'Se guardo correctamente')
+        else:
+            print(formulario.errors.as_data())
         return render (request , 'seguimiento_ciudadano/index.html', self.context)
 
 

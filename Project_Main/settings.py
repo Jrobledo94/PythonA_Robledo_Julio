@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-*$7o=l_c_ey3umy5*3akkg#$t+)^ut)kuxgi&(59188$#wyhd@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '10.18.19.23', 'chihuahua.local']
+ALLOWED_HOSTS = ['127.0.0.1', '10.18.19.23', 'chihuahua.local', 'localhost']
 
 
 
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_postalcodes_mexico.apps.DjangoPostalcodesMexicoConfig',
     'rest_framework_simplejwt',
     'django_extensions',
+    'selenium',
 ]
 
 MIDDLEWARE = [
@@ -114,7 +115,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

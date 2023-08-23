@@ -15,7 +15,7 @@
                     <div>Crear Solicitud</div>
                 </a>
                 <div class="nav-link">
-                    <div><i class="fa-duotone fa-user-alien fa-2x me-3"></i> {{ user.get_username }}</div>
+                    <div id="btn-usuario"><i class="fa-duotone fa-user-alien fa-2x me-3"></i> {{ user.get_username }}</div>
                 </div>
                     {% if request.user|has_group:'Administrador'%}
                 <a class="nav-link" href="/admin">
@@ -78,7 +78,7 @@
         <div class="nav-right">
             {% if user.is_authenticated %}
             <div class="dropdown">
-                <button class="btn header-download-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button  class="btn header-download-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-duotone fa-user-alien fa-2x me-3"></i> {{ user.get_full_name }}
                 </button>
                 <ul class="dropdown-menu">
