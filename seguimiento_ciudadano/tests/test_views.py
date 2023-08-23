@@ -11,11 +11,9 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 import time
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-
+from selenium.webdriver.support.select import Select
 # class urlTesting(TestCase):
 #     def setUp(self) -> None:
-#         self.browser = webdriver.Chrome()
-#         self.wait = WebDriverWait(self.browser, timeout=3)
 #         self.usuario=User.objects.create_user('jrobledotest', password='Jr1811De')
 #         self.usuario.is_superuser=True
 #         self.usuario.is_staff=True
@@ -100,6 +98,8 @@ class test_selenium(StaticLiveServerTestCase):
         self.usuario.save()
     
         self.tiposoli = tiposolicitud.objects.create(nombreTipoSolicitud= "Tipo Solicitud de prueba")
+        tiposolicitud.objects.create(nombreTipoSolicitud= "Tipo Solicitud de prueba 2")
+        tiposolicitud.objects.create(nombreTipoSolicitud= "Tipo Solicitud de prueba 3")
         self.solicitud = Solicitudes.objects.create(
             tipo_solicitud=self.tiposoli,
             descripcion = "Solicitud de prueba creado por tests ",
@@ -117,11 +117,11 @@ class test_selenium(StaticLiveServerTestCase):
         self.url_index = reverse('seguimiento_ciudadano:index')
 
 
-    def test_selenium_login(self):
-        self.browser.maximize_window
+    def disabled_test_1_selenium_login(self):
+        self.browser.maximize_window()
         print(self.live_server_url)
         self.browser.get(self.live_server_url)
-        time.sleep(3)
+        time.sleep(1)
         print(self.browser.find_element(By.XPATH, "//a[contains(@href,'login')]//parent::button"))
         self.browser.find_element(By.XPATH, "//a[contains(@href,'login')]//parent::button").click()
         self.browser.find_element(By.ID, "username").send_keys('jrobledotest')
@@ -134,6 +134,45 @@ class test_selenium(StaticLiveServerTestCase):
         self.assertEqual(self.browser.find_element(By.XPATH,"//div[@class='header-nav']//child::a[last()]//div").text, 'Cerrar Sesión')
         print(self.browser.find_element(By.ID,"btn-usuario").text)
         self.assertIn(self.browser.find_element(By.ID,"btn-usuario").text, 'Test Prueba')
+
+    def test_2_selenium_crear_solicitud(self):
+
+
+        self.browser.maximize_window()
+        print(self.live_server_url)
+        self.browser.get(self.live_server_url)
+        time.sleep(1)
+        print(self.browser.find_element(By.XPATH, "//a[contains(@href,'login')]//parent::button"))
+        self.browser.find_element(By.XPATH, "//a[contains(@href,'login')]//parent::button").click()
+        self.browser.find_element(By.ID, "username").send_keys('jrobledotest')
         
-
-
+        self.browser.find_element(By.NAME, "password").send_keys('Jr1811De')
+        time.sleep(1)
+        self.browser.find_element(By.XPATH, "//button[@type='submit']").click()
+        self.wait.until(lambda d : self.browser.find_element(By.XPATH,"//div[@class='header-nav']//child::a[last()]//div").is_displayed)
+        print(self.browser.find_element(By.XPATH,"//div[@class='header-nav']//child::a[last()]//div").text)
+        self.assertEqual(self.browser.find_element(By.XPATH,"//div[@class='header-nav']//child::a[last()]//div").text, 'Cerrar Sesión')
+        print(self.browser.find_element(By.ID,"btn-usuario").text)
+        self.assertIn(self.browser.find_element(By.ID,"btn-usuario").text, 'Test Prueba')
+        # Seleccionamos la opción para crear una nueva solicitud
+        self.browser.find_element(By.XPATH, "//div[@class='header-content']//descendant::div[text()='Crear Solicitud']//parent::a").click()
+        tipo = Select(self.browser.find_element(By.ID,'id_tipo_solicitud'))
+        time.sleep(2)
+        tipo.select_by_index(2)
+        self.browser.find_element(By.ID,'id_descripcion').send_keys('Solicitud de prueba')
+        time.sleep(2)
+        self.browser.find_element(By.ID,'id_street_address').send_keys('Ningún lugar')
+        self.browser.find_element(By.ID,'id_bld_number').send_keys('13')
+        unfocushelper = self.browser.find_element(By.ID,'id_apt_number')
+        unfocushelper.send_keys('000')
+        self.browser.find_element(By.ID,'id_zip_code').send_keys('31126')
+        unfocushelper.click()
+        unfocushelper.send_keys(Keys.SHIFT)
+        unfocushelper.send_keys(Keys.TAB)
+        unfocushelper.send_keys(Keys.TAB)
+        time.sleep(5) #esperamos a que el javascript cargue las colonias del zip code
+        colonia = Select(self.browser.find_element(By.ID,'id_colonia'))
+        colonia.select_by_index(1)
+        self.assertEqual(self.browser.find_element(By.ID,'id_state').text, 'Chihuahua')
+        self.browser.find_element(By.XPATH,"//button[@type='submit']").click()
+        time.sleep(10)
