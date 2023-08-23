@@ -26,7 +26,7 @@ class Solicitudes(models.Model):
     city = models.CharField(max_length=100, null = True, blank=True)
     state = models.CharField(max_length=100,null = True, blank=True)
     country = models.CharField(max_length=50, default='México')
-    zip_code = models.IntegerField()
+    zip_code = models.CharField(max_length=5)
     colonia = models.CharField(max_length=200, null = True, blank=True)
     solicitud_datetime =  models.DateTimeField(null=False, blank=False, default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True ,null=True, blank=True)

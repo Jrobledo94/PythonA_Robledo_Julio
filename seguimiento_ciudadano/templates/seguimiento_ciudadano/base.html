@@ -27,8 +27,25 @@
     {% include 'seguimiento_ciudadano/navbar.html' %}
 
     <div class="allcontent">
-       {% block content %}
-        {% endblock %}
+      {% if messages %}
+      <div class="toast-container position-fixed top-80px end-0 p-3">
+          <div id="liveToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="toast-header text-bg-success">
+                  <strong class="me-auto">Notificación</strong>
+                  <small>ahora</small>
+                  <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+              <div class="toast-body">
+                  {% for message in messages %}
+                      {{ message }}
+                  {% endfor %}
+              </div>
+          </div>
+      </div>
+        
+      {% endif %}
+      {% block content %}
+      {% endblock %}
     </div>
 
   </div>

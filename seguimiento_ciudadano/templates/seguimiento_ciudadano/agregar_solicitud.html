@@ -124,7 +124,8 @@
                 {% endif %}
                 <script>
                     $(document).ready(function() {
-                        $("#{{form.zip_code.id_for_label}}").on( "focusout", function() {
+                        
+                        $("#{{form.zip_code.id_for_label}}").on("input", function() {
                             var zip = $('#{{form.zip_code.id_for_label}}').val();
                             
                             if (digits_count(zip)==5){
@@ -145,15 +146,9 @@
                         });
                         function digits_count(n) {
                             var count = 0;
-                            if (n >= 1) ++count;
-                          
-                            while (n / 10 >= 1) {
-                              n /= 10;
-                              ++count;
-                            }
-                          
+                            count = n.length
                             return count;
-                          }
+                        }
                     });
                 </script>
             </div>

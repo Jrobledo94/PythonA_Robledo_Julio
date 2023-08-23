@@ -80,7 +80,7 @@ class SolicitudForm(forms.ModelForm):
             'colonia':'Colonia:',
             'city':'Ciudad:',
             'state':'Estado:',
-            'zip_code':'Número exterior:',
+            'zip_code':'Código Postal:',
             'media_url':'Medios:',
         }
         widgets = {

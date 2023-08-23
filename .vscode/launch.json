@@ -14,6 +14,17 @@
             ],
             "django": true,
             "justMyCode": false
+        },
+        {
+            "name": "Django TEST",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "seguimiento_ciudadano",
+            ],
+            "django": true
         }
     ]
 }

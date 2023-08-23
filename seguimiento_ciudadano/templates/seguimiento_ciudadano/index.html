@@ -44,4 +44,14 @@
         </div>
       </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            const toastLiveExample = $('#liveToast')
+
+        if (toastLiveExample) {
+            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+            toastBootstrap.show()
+        }
+        });
+    </script>
 {% endblock %}
