@@ -19,7 +19,6 @@ import time
 from django.conf import settings
 
 
-"""
 class unitTesting(TestCase):
     def setUp(self) -> None:
         self.usuario=User.objects.create_user('jrobledotest', password='Jr1811De')
@@ -46,40 +45,45 @@ class unitTesting(TestCase):
         self.url_solicitudes = reverse('seguimiento_ciudadano:Lista_solicitudes')
         self.url_index = reverse('seguimiento_ciudadano:index')
         self.client = Client()
+
+
+
     def test_view_class(self):
         url = reverse('seguimiento_ciudadano:Lista_solicitudes_api')
         # print(resolve(url))
         self.assertEqual(resolve(url).func.view_class, lista_solicitudes_api)
+        print(f'{self.id()} pass')
+        
     def test_view_function(self):
         url = reverse('seguimiento_ciudadano:Registro Usuario')
         # print(resolve(url))
         self.assertEqual(resolve(url).func.__name__, 'signup')
         self.assertEqual(resolve(url).func, signup)
+        print(f'{self.id()} pass')
+
     def test_view_class_with_args(self):
         url = reverse('seguimiento_ciudadano:Seguimiento', kwargs={'request_id':2})
         # print(resolve(url))
         self.assertEqual(resolve(url).func.view_class, seguimiento_solicitud)
+        print(f'{self.id()} pass')
+        
     def test_solicitudes_get_crear_solicitud_form(self):
         response = self.client.get(self.url_nueva_solicitud)
         # Verificamos que el estado sea 200 (OK), es decir todo esta bien
-        print (response.status_code)
-        print('response.content:')
-        print(response.content)
-        print('response.items:')
-        print(response.items)
+
         self.assertEquals(response.status_code , 401)# la vista nueva_solicitud sólo la pueden ver usuarios autenticados, arroja 401 Unauthorized
         # Verificar que en la lista de Solicitudes esté el objet Solicitud creado en setUp
+        print(f'{self.id()} pass')
+
+
+
     def test_solicitudes_get_all_solicitudes(self):
         response = self.client.get(self.url_solicitudes)
-        print (response.status_code)
-        print('response.content:')
-        # print(response.content)
-        print('response.items:')
-        print(response.context['solicitudes'])
+
         self.assertEquals(response.status_code , 200)# la vista nueva_solicitud sólo la pueden ver usuarios autenticados, arroja 401 Unauthorized
         self.assertEqual(response.context['solicitudes'].first(), self.solicitud)
         self.assertIn(self.solicitud, response.context['solicitudes'])
-
+        print(f'{self.id()} pass')
 
 
 
@@ -129,10 +133,9 @@ class test_funcional_selenium(StaticLiveServerTestCase):
         self.assertEqual(self.browser.find_element(By.XPATH,"//div[@class='header-nav']//child::a[last()]//div").text, 'Cerrar Sesión')
         print(self.browser.find_element(By.ID,"btn-usuario").text)
         self.assertIn(self.browser.find_element(By.ID,"btn-usuario").text, 'Test Prueba')
+        print(f'{self.id()} pass')
 
     def test_2_selenium_crear_solicitud(self):
-
-
         self.browser.maximize_window()
         print(self.live_server_url)
         self.browser.get(self.live_server_url)
@@ -183,9 +186,9 @@ class test_funcional_selenium(StaticLiveServerTestCase):
 
         self.browser.find_element(By.XPATH,"//div[text()='Ver Solicitudes']//parent::a").click()
         time.sleep(2)# esperamos 2 segundos por si hay alguna otra petición en proceso
-        self.assertIn(self.browser.find_element(By.XPATH, "//table"), self.descripcion)
+        self.assertIn(self.descripcion, str(self.browser.find_element(By.XPATH, "//table").text))
         #end test
-         """
+        print(f'{self.id()} pass')
 
 
 class TestIntegraciónAPI(TestCase):
@@ -255,11 +258,11 @@ class TestIntegraciónAPI(TestCase):
         POSTauthorRequest = clientWithToken.post(self.url_Authors, data=jsonAuthor)
         print(POSTauthorRequest.content)
         print(POSTauthorRequest.status_code)
-        self.assertEquals(POSTauthorRequest.status_code , 201)
+        self.assertEquals(POSTauthorRequest.status_code, 201)
         self.assertEqual(jsonAuthor["last_name"],json.loads(POSTauthorRequest.content)["last_name"])
 
 
         ### Prueba de objeto con response
         created_author = catModels.Author.objects.get(first_name="Juana de")
         self.assertEqual(created_author.last_name, jsonAuthor["last_name"])
-
+        print(f'{self.id()} pass')

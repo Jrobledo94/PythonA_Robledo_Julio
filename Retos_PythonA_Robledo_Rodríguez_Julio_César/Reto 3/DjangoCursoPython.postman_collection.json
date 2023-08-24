@@ -1,0 +1,546 @@
+{
+	"info": {
+		"_postman_id": "8a72f9d0-e61d-44a8-b9a8-e2000db58cf4",
+		"name": "DjangoCursoPython",
+		"description": "Documentación de uso de la api rest catalog, del proyecto PythonA_Robledo_Rodríguez_Julio\n\nusar Jrobledo para admin, Ciudadano_1 para ciudadano(denegadas algunas acciones de la api)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2230345"
+	},
+	"item": [
+		{
+			"name": "Get Token JWT User and Password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"// Prueba para verificar que se recibió un access token, y que los guarde como nombre de variable, incluyendo el refresh token\r",
+							"pm.test(\"save token access\", function(){\r",
+							"    if (pm.response.to.have.status(200)){\r",
+							"        const response = pm.response.json(); \r",
+							"        if(pm.response.to.have.jsonBody(\"access\") && pm.response.to.have.jsonBody(\"refresh\")){\r",
+							"            console.log(\"si entre alv\")\r",
+							"            pm.collectionVariables.set(\"access\", response.access)\r",
+							"            pm.collectionVariables.set(\"refresh\", response.refresh)\r",
+							"            pm.expect(pm.collectionVariables.get(\"access\")).to.equal(response.access)\r",
+							"            console.log(pm.collectionVariables.get(\"access\"))\r",
+							"            pm.expect(pm.collectionVariables.get(\"refresh\")).to.equal(response.refresh)\r",
+							"            console.log(pm.collectionVariables.get(\"refresh\"))\r",
+							"        }\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/token/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"token",
+						""
+					]
+				},
+				"description": "para la api rest de catalog, obtiene un nuevo Token Mediante rest_framework_simplejwt\n\nParams:\n\nusername: nombre de usuario\n\npassword:contraseña"
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"// Prueba para verificar que se recibió un refresh token\r",
+							"pm.test(\"Refresh token access\", function(){\r",
+							"    if (pm.response.to.have.status(200)){\r",
+							"        const response = pm.response.json(); \r",
+							"        if(pm.response.to.have.jsonBody(\"access\")){\r",
+							"            console.log(\"si entre alv\")\r",
+							"            pm.collectionVariables.set(\"access\", response.access)\r",
+							"            pm.expect(pm.collectionVariables.get(\"access\")).to.equal(response.access)\r",
+							"            console.log(pm.collectionVariables.get(\"access\"))\r",
+							"        }\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"refresh\": \"{{refresh}}\"\r\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/token/refresh/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"token",
+						"refresh",
+						""
+					]
+				},
+				"description": "Retorna un nuevo token de la API, y seguir teniendo acceso a la aplicación.\n\n@params:  \n**refresh**: el valor 'access' retornado por /api/token/"
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener autores",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/catalog/Authors/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"catalog",
+						"Authors",
+						""
+					]
+				},
+				"description": "Obtiene autores en formato JSON"
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener lista de autores (con sus libros publicados)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/catalog/Authors_books/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"catalog",
+						"Authors_books",
+						""
+					]
+				},
+				"description": "Retorna todos los autores con sus respectivos libros, en formato json"
+			},
+			"response": []
+		},
+		{
+			"name": "Crear autor",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/catalog/Authors_books/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"catalog",
+						"Authors_books",
+						""
+					]
+				},
+				"description": "Crea un nuevo autor, con la opción de agregar libros junto con el autor.\n\nRequerimiento: ISBN único"
+			},
+			"response": [
+				{
+					"name": "Crear sólo autor",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Juana de\",\r\n    \"last_name\": \"Arco\",\r\n    \"date_of_birth\": \"1968-08-17\",\r\n    \"date_of_death\": \"2014-12-24\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/catalog/Authors_books/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"catalog",
+								"Authors_books",
+								""
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Crear autor con libros",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Carlos\",\r\n    \"last_name\": \"Ruiz Zafón\",\r\n    \"date_of_birth\": \"1942-01-08\",\r\n    \"date_of_death\": \"2018-03-14\",\r\n    \"Books_list\": [\r\n        {\r\n            \"title\": \"La sombra del viento \",\r\n            \"summary\": \"Un amanecer de 1945 un muchacho es conducido por su padre a un misterioso lugar oculto en el corazón de la ciudad vieja: El Cementerio de los Libros Olvidados. Allí, Daniel Sempere encuentra un libro maldito que cambiará el rumbo de su vida y le arrastrará a un laberinto de intrigas y secretos enterrados en el alma oscura de la ciudad. La Sombra del Viento es un misterio literario ambientado en la Barcelona de la primera mitad del siglo XX, desde los últimos esplendores del Modernismo a las tinieblas de la posguerra.\",\r\n            \"isbn\": \"6070721632\",\r\n            \"genre\": [\r\n                2\r\n            ]\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/catalog/Authors_books/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"catalog",
+								"Authors_books",
+								""
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Obtener Instancias de libros",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/catalog/BookInstances/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"catalog",
+						"BookInstances",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear Instancia Libro",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"imprint\": \"Grupo editorial algo\",\r\n    \"due_back\": null,\r\n    \"status\": \"r\",\r\n    \"book\": 8\r\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/catalog/BookInstances/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"catalog",
+						"BookInstances",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener Libros",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/catalog/Books/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"catalog",
+						"Books",
+						""
+					]
+				},
+				"description": "Obtiene una lista de libros\n\nSólo pueden verlos los usuarios que son staff ('Administrador')"
+			},
+			"response": []
+		},
+		{
+			"name": "Crear Libro",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"title\": \"El color que cayó del cielo\",\r\n        \"author\": 2,\r\n        \"summary\": \"Un meteorito atraviesa millones de kilómetros e impacta en las colinas de Arkham. Al romperse, una tonalidad supranatural, nunca vista, emerge e infecta las napas de un pozo de agua. Con el paso del tiempo, el color pasa a los árboles, a los animales y a los seres humanos, a quienes trastorna y enloquece.\",\r\n        \"isbn\": \"321364\",\r\n        \"genre\": [\r\n            1\r\n        ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/catalog/Books/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"catalog",
+						"Books",
+						""
+					]
+				},
+				"description": "crea un nuevo libro\n\nDebe tener permisos de staff ('Administrador')"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "username",
+			"value": "jrobledo"
+		},
+		{
+			"key": "password",
+			"value": "Jr1811De"
+		},
+		{
+			"key": "access",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
