@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Author, Book, BookInstance, Genre, Language
-
+from seguimiento_ciudadano.models import Solicitudes, Seguimiento_solicitud
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
@@ -21,7 +21,6 @@ class AuthorandbooksSerializer(serializers.ModelSerializer):
         model = Author
         fields = ('first_name','last_name','date_of_birth','date_of_death', 'Books_list')
     def create(self, validated_data):
-        print(type(validated_data))
         if 'Books_list' in validated_data:
             Books_data = validated_data.pop("Books_list")
             authorr = Author.objects.create(**validated_data)
@@ -55,3 +54,49 @@ class LanguageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Language
         fields = '__all__'
+
+
+
+
+### Seguimiento serializer class
+class SolicitudSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Solicitudes
+        fields = '__all__'
+
+class SeguimientoSolicitudSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Seguimiento_solicitud
+        fields = '__all__'
+        depth = 1 # This will include the fields of the foreign key to BookInstance
+
+
+class SolicitudDetailSerializer(serializers.ModelSerializer):
+    Seguimiento = SeguimientoSolicitudSerializer(many=True, required = False)
+    class Meta:
+        model=Solicitudes
+        fields=('tipo_solicitud',
+                'request_id',
+                'descripcion',
+                'street_address',
+                'bld_number',
+                'apt_number',
+                'city',
+                'state',
+                'country',
+                'zip_code',
+                'colonia',
+                'solicitud_datetime',
+                'updated_at',
+                'status',
+                'media_url',
+                'agency_responsible',
+                'activo',
+                'Seguimiento')
+    def create(self, validated_data):
+        if 'Seguimiento' in validated_data:
+            Seguimiento_data = validated_data.pop("Seguimiento")
+            authorr = Author.objects.create(**validated_data)
+        else:
+            authorr = Author.objects.create(**validated_data)
+        return authorr

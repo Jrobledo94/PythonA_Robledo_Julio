@@ -491,6 +491,192 @@
 				"description": "crea un nuevo libro\n\nDebe tener permisos de staff ('Administrador')"
 			},
 			"response": []
+		},
+		{
+			"name": "Obtener Solicitudes",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/catalog/Solicitudes/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"catalog",
+						"Solicitudes",
+						""
+					]
+				},
+				"description": "Obtiene la lista de solicitudes Open311 de nuestra aplicación\n\nno requiere autorización"
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener Solicitud",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/catalog/Solicitudes/{{idSolicitud}}/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"catalog",
+						"Solicitudes",
+						"{{idSolicitud}}",
+						""
+					]
+				},
+				"description": "Obtiene el detalle de una sola solicitud Open311 (incluyendo actualizaciones de seguimiento) de nuestra aplicación\n\nno requiere autorización"
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener seguimiento solicitudes",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/catalog/Seguimientos/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"catalog",
+						"Seguimientos",
+						""
+					]
+				},
+				"description": "Endpoint que permite ver seguimientos registrados (sólo vista, no se implementa post puesto que aquí no es necesario ni adecuado). usarlo sólo para pruebas"
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar Solicitud",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tipo_solicitud\": 4,\r\n    \"descripcion\": \"Creado por API REST\",\r\n    \"street_address\": \"CAvenida API REST\",\r\n    \"bld_number\": \"666\",\r\n    \"apt_number\": null,\r\n    \"city\": \"Chihuahua\",\r\n    \"state\": \"Chihuahua\",\r\n    \"country\": \"México\",\r\n    \"zip_code\": \"31126\",\r\n    \"colonia\": \"Santa Elena\",\r\n    \"solicitud_datetime\": \"2023-09-01T13:04:07.372170-06:00\",\r\n    \"updated_at\": \"2023-09-01T13:04:07.372170-06:00\",\r\n    \"status\": \"cerrado\",\r\n    \"media_url\": null,\r\n    \"agency_responsible\": null,\r\n    \"activo\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/catalog/Solicitudes/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"catalog",
+						"Solicitudes",
+						""
+					]
+				},
+				"description": "crea un nuevo libro\n\nDebe tener permisos de staff ('Administrador')"
+			},
+			"response": []
+		},
+		{
+			"name": "Modificar Solicitud",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tipo_solicitud\": 2,\r\n    \"request_id\": 34,\r\n    \"descripcion\": \"Modificado por API REST\",\r\n    \"street_address\": \"Avenida API REST\",\r\n    \"bld_number\": \"212\",\r\n    \"apt_number\": null,\r\n    \"city\": \"Chihuahua\",\r\n    \"state\": \"Chihuahua\",\r\n    \"country\": \"México\",\r\n    \"zip_code\": \"31126\",\r\n    \"colonia\": \"Santa Elena\",\r\n    \"solicitud_datetime\": \"2023-08-23T11:09:43.830002-06:00\",\r\n    \"updated_at\": \"2023-09-01T13:04:07.372170-06:00\",\r\n    \"status\": \"abierto\",\r\n    \"media_url\": null,\r\n    \"agency_responsible\": null,\r\n    \"activo\": true\r\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/catalog/Solicitudes/{{idSolicitud}}/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"catalog",
+						"Solicitudes",
+						"{{idSolicitud}}",
+						""
+					]
+				},
+				"description": "Con el método put, actualiza lod datos del registro solicitud especificado\n\nrequiere autorización token"
+			},
+			"response": []
 		}
 	],
 	"auth": {
@@ -541,6 +727,10 @@
 			"key": "refresh",
 			"value": "",
 			"type": "string"
+		},
+		{
+			"key": "idSolicitud",
+			"value": "34"
 		}
 	]
 }

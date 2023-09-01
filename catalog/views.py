@@ -2,13 +2,17 @@ from django.shortcuts import render
 from django.http import Http404, HttpResponse
 from .models import Book, Author, BookInstance, Genre
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import AuthorSerializer, AuthorandbooksSerializer,BookInstanceSerializer,BookSerializer,GenreSerializer,LanguageSerializer
+from .serializers import AuthorSerializer, AuthorandbooksSerializer,BookInstanceSerializer,BookSerializer, SolicitudSerializer,SolicitudDetailSerializer, SeguimientoSolicitudSerializer
 from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth.models import User
+
+
+from seguimiento_ciudadano.models import Solicitudes, Seguimiento_solicitud
+
 # Create your views here.
 
 def index(request):
@@ -161,3 +165,77 @@ class BookInstanceDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 
+class SolicitudesView(APIView):
+    def get_permissions(self):
+        print(type(self))
+        print(self)
+        if self.request.method == 'GET':
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+    def get(self, request):
+        all_solicitudes = Solicitudes.objects.all()
+        serializer = SolicitudSerializer(all_solicitudes, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = SolicitudSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class SolicitudesDetailView(APIView):
+    def get_permissions(self):
+
+        if self.request.method == 'GET':
+            permission_classes = [AllowAny]
+        elif self.request.method == 'DELETE':
+            permission_classes = [IsAdminUser]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+    def get_object(self, Solicitud_id):
+        try:
+            return Solicitudes.objects.get(pk=Solicitud_id)
+        except Solicitudes.DoesNotExist:
+            raise Http404
+    def get(self, request, Solicitud_id):
+        Solicitud = self.get_object(Solicitud_id)
+        serializer = SolicitudDetailSerializer(Solicitud)
+        return Response(serializer.data)
+
+    def put(self, request, Solicitud_id):
+        Solicitud = self.get_object(Solicitud_id)
+        serializer = SolicitudDetailSerializer(Solicitud, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, Solicitud_id):
+        BookInstance = self.get_object(Solicitud_id)
+        BookInstance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class SeguimientoSolicitudView(APIView):
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
+    def get(self, request):
+        seguimientos = Seguimiento_solicitud.objects.all()
+        serializer = SeguimientoSolicitudSerializer(seguimientos, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = SeguimientoSolicitudSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)

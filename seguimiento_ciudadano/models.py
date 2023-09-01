@@ -74,7 +74,7 @@ class Solicitudes_api(models.Model):
         return str(self.request_id)
     
 class Seguimiento_solicitud(models.Model):
-    solicitud_id = models.ForeignKey(Solicitudes, on_delete=models.CASCADE)
+    solicitud_id = models.ForeignKey(Solicitudes, on_delete=models.CASCADE, related_name='Seguimiento')
     texto_status = models.CharField(max_length=1000, null=False, blank=True)
     fecha_actualizacion = models.DateField("Fecha de Actualización", auto_now_add=True)
     evidencia = models.FileField(null=True, blank=True)
