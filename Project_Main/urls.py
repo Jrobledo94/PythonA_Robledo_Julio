@@ -17,8 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from django_postalcodes_mexico import urls as django_postalcodes_mexico_urls
-from django.conf import settings #add this
-from django.conf.urls.static import static #add this
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 from rest_framework_simplejwt.views import TokenVerifyView
 from seguimiento_ciudadano import urls as surls
@@ -31,5 +31,5 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-
+    path('', include('pwa.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
