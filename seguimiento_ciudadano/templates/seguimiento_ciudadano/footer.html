@@ -52,3 +52,12 @@
         </ul>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        var toastLiveExample = $('#liveToast');
+        if (toastLiveExample.length) {
+            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+            toastBootstrap.show();
+        }
+    });
+</script>

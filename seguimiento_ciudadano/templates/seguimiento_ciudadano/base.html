@@ -11,11 +11,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Seguimiento ciudadano - {% block title %} {% endblock %}</title>
     <!-- static assets -->
-	<link rel="icon" type="image/x-icon" href="{% static 'seguimiento_ciudadano/img/favicon.ico' %}">
 	<link rel="stylesheet" href="{% static 'seguimiento_ciudadano/css/bootstrap/css/bootstrap.css' %}">
 	<link rel="stylesheet" href="{% static 'seguimiento_ciudadano/css/lobe.css' %}">
+  <script src="{% static 'seguimiento_ciudadano/js/jquery-3.6.4.js' %}"></script>
 	<script src="{% static 'seguimiento_ciudadano/css/bootstrap/js/bootstrap.bundle.js' %}"></script>
-	<script src="{% static 'seguimiento_ciudadano/js/jquery-3.6.4.js' %}"></script>
 	<script defer src="{% static 'seguimiento_ciudadano/css/FontAwesomePro/all.js' %}"></script>
 	<script defer src="{% static 'seguimiento_ciudadano/js/lobe.js' %}"></script>
 	<link rel="stylesheet" href="{% static 'seguimiento_ciudadano/Fonts/AvenirNextPro/stylesheet.css' %}" />
@@ -45,7 +44,6 @@
               </div>
           </div>
       </div>
-        
       {% endif %}
       {% block content %}
       {% endblock %}
