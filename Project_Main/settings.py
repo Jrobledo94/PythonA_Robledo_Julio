@@ -29,15 +29,12 @@ SECRET_KEY = 'django-insecure-*$7o=l_c_ey3umy5*3akkg#$t+)^ut)kuxgi&(59188$#wyhd@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '10.18.19.23', 'chihuahua.local', 'localhost', '*']
-
-
+ALLOWED_HOSTS = ['127.0.0.1', '10.18.19.23', 'chihuahua.local', 'localhost', '*', '10.18.19.*']
 
 # Application definition
 
 INSTALLED_APPS = [
     'seguimiento_ciudadano.apps.SeguimientoCiudadanoConfig',
-    'catalog',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -169,26 +166,26 @@ PWA_APP_START_URL = '/'
 PWA_APP_STATUS_BAR_COLOR = 'default'
 PWA_APP_ICONS = [
     {
-        'src': 'static/seguimiento_ciudadano/img/icons/logo_512x512.png',
+        'src': '/static/seguimiento_ciudadano/img/icons/logo_512x512.png',
         'sizes': '512x512'
     }
 ]
 PWA_APP_ICONS_APPLE = [
     {
-        'src': 'static/seguimiento_ciudadano/img/icons/logo_512x512.png',
+        'src': '/static/seguimiento_ciudadano/img/icons/logo_512x512.png',
         'sizes': '512x512'
     }
 ]
 PWA_APP_SPLASH_SCREEN = [
     {
-        'src': 'static/seguimiento_ciudadano/img/icons/splash-640x1136.png',
+        'src': '/static/seguimiento_ciudadano/img/icons/splash-640x1136.png',
         'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
     }
 ]
 PWA_APP_DIR = 'seguimiento_ciudadano'
 PWA_APP_SCREENSHOTS = [
     {
-      'src': 'static/seguimiento_ciudadano/img/icons/splash-750x1334.png',
+      'src': '/static/seguimiento_ciudadano/img/icons/splash-750x1334.png',
       'sizes': '750x1334',
       'type': 'image/png',
       'form_factor': 'narrow',
@@ -203,3 +200,4 @@ PWA_APP_SHORTCUTS = [
         'description': 'Shortcut to a page in my application'
     }
 ]
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'seguimiento_ciudadano','static', 'js','seguimiento_ciudadano', 'serviceworker.js')

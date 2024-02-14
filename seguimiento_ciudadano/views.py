@@ -28,10 +28,13 @@ import requests
 
 
 def Index(request):
-    template_name = 'seguimiento_ciudadano/index.html'
-    context = {}
-    context['title'] = 'Lista de Solicitudes'
-    return render (request , template_name, context)
+    if request.user.is_active:
+        template_name = 'seguimiento_ciudadano/index.html'
+        context = {}
+        context['title'] = 'Lista de Solicitudes'
+        return render (request , template_name, context)
+    else:
+        return redirect("login/")
 
 
 def signin(request):

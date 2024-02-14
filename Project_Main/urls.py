@@ -26,7 +26,6 @@ from seguimiento_ciudadano import urls as surls
 urlpatterns = [
     path('', include("seguimiento_ciudadano.urls")),
     path('admin/', admin.site.urls),
-    path('catalog/', include("catalog.urls")),
     path('cp-', include(django_postalcodes_mexico_urls)),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
